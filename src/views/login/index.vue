@@ -53,24 +53,24 @@
 import { reactive, ref } from "vue";
 import { useRouter} from "vue-router";
 import { PersonOutline, LockClosedOutline} from '@vicons/ionicons5';
-// import request from '@/utils/request';
 import { useUserStore } from "@/store/user";
+import { useMessage } from 'naive-ui'
+const message = useMessage()
+window.$message = useMessage()
+
 
 interface FormState {
   email: string;
   password: string;
 }
-
+const formRef = ref();
 const router = useRouter();
 const userStore = useUserStore();
 const loading = ref(false)
 const formInline = reactive({
-  username:'Nsin@163.com',
+  username:'super@a.com',
   password:'123123'
 });
-
-const formRef = ref();
-
 // 验证规则
 const rules = {
   // 失去焦点时触发
@@ -80,34 +80,42 @@ const rules = {
 const handleSubmit = (e:Event) => {
   //e.preventDefault();
   // 表单验证
-  formRef.value.validate(async(errors:any)=>{
-    if(errors){
-      return; // 有错误就返回，不执行，不再往下发送请求
+  formRef.value.validate(async(errors:any)=> {
+    if (!errors) {
+      // return; // 有错误就返回，不执行，不再往下发送请求
+      // 接收数据
+      const {username, password} = formInline;
+      // 显示登录中
+      loading.value = true;
+      // 调整数据结构
+      const params: FormState = {
+        email: username,
+        password
+      };
+      try {
+        // 执行登录操作
+        const response = userStore.login(params).then(res => {      // res是userStore里面返回的数据
+          // 关闭窗口
+          console.log(res);
+          message.success('登陆成功')
+          loading.value = false;
+          // 弹出提示  登陆成功
+          // 跳转回首页
+          router.push({name: 'dashboard'});
+        }).catch(err => {
+          console.log(err);
+          loading.value = false;
+        });
+        // 成功跳转到首页
+        // 失败后提示
+      } finally {
+        loading.value = false;
+      }
     }
-    // 接收数据
-    const { username, password } = formInline;
-    // 显示登录中
-    loading.value = true;
-    // 调整数据结构
-    const data:FormState = {
-      email:username,
-      password
-    }
-    console.log(data)
-    // 执行登录操作
-    userStore.login(data).then(res=>{      // res是userStore里面返回的数据
-      // 关闭窗口
-      loading.value = false;
-      // 弹出提示  登陆成功
-      // 跳转回首页
-      router.push({name:'dashboard'});
-    }).catch(err=>{
-      loading.value = false;
-      alert('登陆失败');
+    else {
+        // message.error('请填写完整信息，并且进行验证码校验')
+      }
     })
-      // 成功跳转到首页
-      // 失败后提示
-  })
 };
 
 </script>

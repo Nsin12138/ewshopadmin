@@ -8,7 +8,7 @@ function pathResolve(dir:string){
     return resolve(process.cwd(), '.', dir);
 }
 
-export default defineConfig({
+ export default defineConfig({
   plugins: [
       vue(),
       Components({

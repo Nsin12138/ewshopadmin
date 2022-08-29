@@ -25,13 +25,17 @@ export const useUserStore = defineStore({
         getAvatar():string {
             return this.avatar;
         },
-        getNickname():string {
+        getUserName():string {
             return this.username;
         },
         getPermissions():string[] {
             return this.permissions;
         },
-        getUserInfo():Object {
+        async getUserInfo():Object {
+            // 判断 this.info 是否是空对象/不存在，不存在时调用getUser方法
+            if(!this.info?.id){
+                this.getUser();
+            }
             return this.info;
         }
     },
@@ -51,7 +55,7 @@ export const useUserStore = defineStore({
       setUserName(username:string){
           this.username = username;
       },
-      setPermissions(permissions:string[]){
+      setPermissions(permissions:string[]) {
           this.permissions = permissions;
       },
         // 异步的登录方法
@@ -64,22 +68,18 @@ export const useUserStore = defineStore({
                   this.getUser();
               }
           }catch(error){
-              console.log(error);
-          }
-      },
+
+          }      },
       async getUser(){
           try {
               const response = await user();
-              console.log(response); // 用户详细信息
+
               this.setUserInfo(response);
               this.setAvatar(response.avatar);
               this.setUserName(response.name);
               return response;
           }catch(error){
-              console.log(error);
           }
       }
-
-
     }
 })

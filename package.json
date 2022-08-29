@@ -2,13 +2,13 @@
   "name": "ewshopadmin",
   "private": true,
   "version": "0.0.0",
-  "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",
     "preview": "vite preview"
   },
   "dependencies": {
+    "@vueup/vue-quill": "^1.0.0-alpha.1",
     "axios": "^0.27.2",
     "pinia": "^2.0.18",
     "vue": "^3.2.37",

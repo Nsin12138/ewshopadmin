@@ -1,8 +1,8 @@
 import { RouteRecordRaw} from 'vue-router'
 import Layout from '@/layout/index.vue'
-import { renderIcon } from '@/utils'
-import {Browsers} from '@vicons/ionicons5'
-const routeName = 'dashboard'
+import {FilmSharp} from '@vicons/ionicons5'
+import {renderIcon} from '@/utils'
+const routeName = 'slide'
 /**
  * @param name 路由名称, 必须设置,且不能重名
  * @param meta 路由元信息（路由附带扩展信息）
@@ -15,25 +15,24 @@ const routeName = 'dashboard'
  * */
 const routes: Array<RouteRecordRaw> = [
     {
-        path: '/dashboard',
+        path: '/slide',
         name: routeName,
         component: Layout,
-        redirect: '/dashboard/console',
-
+        redirect: '/slide/list',
         meta: {
-            title: '首页统计',
-            icon: renderIcon(Browsers),
-            sort:0,
+            title: '轮播管理',
+            icon: renderIcon(FilmSharp),
+            sort:6
         },
         children: [
-               {
-                    path: 'console',
-                    name: `${routeName}_console`,
-                    meta: {
-                        title: '主控台',
-                        icon: renderIcon(Browsers),
-                    },
-                   component: () => import('@/views/dashboard/index.vue'),
+            {
+                path: 'list',
+                name: `${routeName}_list`,
+                meta: {
+                    title: '轮播图列表',
+                    icon: renderIcon(FilmSharp),
+                },
+                component: () => import('@/views/slide/index.vue'),
             }]
     }
 ];
