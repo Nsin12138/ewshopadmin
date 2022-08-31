@@ -4,12 +4,12 @@ import request from "@/utils/request";
  * @param params
  * */
 // 评价列表
-export function comments(params:any){
+export function comments(data){
     return request(
         {
             url:'/api/admin/comments',
             method:'GET',
-            params,
+            data,
         }
     );
 }

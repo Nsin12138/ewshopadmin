@@ -2,8 +2,8 @@
   <div>
     <div class="h-24 w-full bg-white p-3 mb-6">
       <div>
-        <span class="text-slate-400 pr-1">首页</span> / <span class="pl-1">商品列表</span>
-        <div class="pt-3 text-xl text-black font-medium">
+        <span class="text-slate-400 pr-1">首页</span> / <span class="pl-1 font-bold">商品管理</span>
+        <div class="pt-3 text-xl text-black font-bold">
           商品管理
         </div>
       </div>

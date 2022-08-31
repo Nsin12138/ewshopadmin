@@ -20,11 +20,7 @@
           <n-input v-model:value="model.name" placeholder="请输入姓名" />
         </n-form-item>
         <n-form-item path="email" label="邮箱"  >
-          <n-input
-              v-model:value="model.email"
-              type="email"
-              placeholder="请输入邮箱"
-          />
+          <span>{{model.email}}</span>
         </n-form-item>
         <n-row :gutter="[0, 24]">
           <n-col :span="24">

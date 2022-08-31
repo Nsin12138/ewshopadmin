@@ -15,7 +15,7 @@
           <n-data-table
               :columns="columns"
               :data="data"
-              :pagination="pagination"
+
               :bordered="false"
           />
           <div class="p-4 flex justify-end pr-10">
@@ -39,39 +39,31 @@ const message = useMessage()
 const data = ref([])
 const totalPages = ref(0)
 const columns = [
-  {
-    title: '分类名称',
-    key: 'name',
-  },
-
-  {
-    title: '编辑',
-    key: 'name',
-    render(row){
-      return h(NButton,{
-        size:'small',
-        color:'#1890ff',
-        strong:true,
-        onClick:()=>{
-          user_id.value = row.id
-          showEditModal.value = true
-        }
-      },'编辑')
-    }}
+      {
+        type: 'selection'
+      },
+      {
+        title: '分类名称',
+        key: 'name'
+      },
+      {
+        title: '状态',
+        key: 'status'
+      }
 ]
-const pagination = ref(false as const)
+const rowKey = ref(false as const)
 
 // 添加模态框显示状态
 const showModal = ref(false)
 // 编辑模态框
 const showEditModal = ref(false)
 
-const user_id = ref('')
+
 
 const loadingBar = useLoadingBar()
 
 onMounted(()=>{
-  getCategoryList({})
+  getCategoryList({type:'all'})
 })
 const updatePage = (pageNum) => {
   getCategoryList({
@@ -99,10 +91,14 @@ const updatePage = (pageNum) => {
 const getCategoryList = (params) =>{
   loadingBar.start()
   category(params).then(category =>{
-    data.value = category.data
+    console.log(category,'cartegory')
+    data.value=category
+    console.log(data.value);
+    // data.map(item=>{
+    //   console.log(item)
+    // })
     // totalPages.value = goods.meta.pagination.total_pages
     // page.value = goods.meta.pagination.current_page
-    // console.log(data.value);
     loadingBar.finish()
   }).catch(err=>{
     loadingBar.error()

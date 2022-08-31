@@ -2,8 +2,8 @@
   <div>
     <div class="h-24 w-full bg-white p-3 mb-6">
       <div>
-        <span class="text-slate-400 pr-1">首页</span> / <span class="pl-1">用户列表</span>
-        <div class="pt-3 text-xl text-black font-medium">
+        <span class="text-slate-400 pr-1">首页</span> / <span class="pl-1 font-bold">用户管理</span>
+        <div class="pt-3 text-xl text-black font-bold">
           用户管理
         </div>
       </div>
@@ -72,22 +72,28 @@ const totalPages = ref(0)
 const columns = [
   {
     title: '头像',
-    key: 'avatar_url',
+    key: 'avatar',
+    align:'center',
     render (row) {
       return h(NAvatar,{round:true,src:row.avatar_url,size:'medium'})
     }
   },
   {
     title: '姓名',
-    key: 'name'
+    key: 'name',
+    align:'center',
+
   },
   {
     title: '邮箱',
-    key: 'email'
+    key: 'email',
+    align:'center',
+
   },
   {
     title: '是否禁用',
     key: 'is_locked',
+    align:'center',
     render(row){
       return h(NSwitch,{
         size:'medium',
@@ -103,10 +109,13 @@ const columns = [
   {
     title: '创建时间',
     key: 'created_at',
+    align:'center',
+
   },
   {
     title: '操作',
     key: 'created_at',
+    align:'center',
     render(row){
       return h(NButton,{
         size:'small',
@@ -165,7 +174,9 @@ const searchReload = ()=>{
 const getUserList = (params) =>{
   loadingBar.start()
   users(params).then(users =>{
+    console.log(users.data)
     data.value = users.data
+    console.log(data.value);
     totalPages.value = users.meta.pagination.total_pages
     page.value = users.meta.pagination.current_page
     loadingBar.finish()

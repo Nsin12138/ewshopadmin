@@ -58,3 +58,13 @@ export  function getCategoryLock(categoryid) {
     );
 }
 
+// 分类排序
+export  function getCategorySeq(categoryid) {
+    return request(
+        {
+            url: `/api/admin/category/${categoryid}/seq`,
+            method: 'PATCH',
+        }
+    );
+}
+

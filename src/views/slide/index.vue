@@ -2,38 +2,14 @@
   <div>
     <div class="h-24 w-full bg-white p-3 mb-6">
       <div>
-        <span class="text-slate-400 pr-1">首页</span> / <span class="pl-1">轮播图列表</span>
-        <div class="pt-3 text-xl text-black font-medium">
-          轮播图管理
+        <span class="text-slate-400 pr-1">首页</span> / <span class="pl-1 font-bold">轮播管理</span>
+        <div class="pt-3 text-xl text-black font-bold">
+          轮播管理
         </div>
       </div>
     </div>
     <div class="content px-4">
-      <div class="bg-white pt-4 pr-6">
-        <n-form
-            ref="formRef"
-            inline
-            :label-width="80"
-            :model="formSearch"
-            label-placement="left"
-        >
-          <n-form-item label="姓名" path="name">
-            <n-input v-model:value="formSearch.name" placeholder="输入姓名" />
-          </n-form-item>
-          <n-form-item label="邮箱" path="email">
-            <n-input v-model:value="formSearch.email" placeholder="请输入邮箱" />
-          </n-form-item>
 
-          <n-form-item class="ml-auto">
-            <n-button class="mr-4" attr-type="button" @click="searchReload">
-              重置
-            </n-button>
-            <n-button type="info" attr-type="button" @click="searchSubmit">
-              搜索
-            </n-button>
-          </n-form-item>
-        </n-form>
-      </div>
       <div class="mt-4 bg-white">
         <div class="text-xl px-6 py-4 flex ">
           <span>轮播图列表</span>
@@ -59,32 +35,33 @@
 
 <script lang="ts" setup>
 import { h,ref,onMounted } from 'vue'
-import { NButton, useMessage,NAvatar,NSwitch,useLoadingBar } from 'naive-ui'
+import { NButton, useMessage,NImage,NSwitch,useLoadingBar } from 'naive-ui'
 import AddSlide from './components/AddSlide.vue'
-import { users } from '@/api/users'
+import { slides } from '@/api/slide'
 const page = ref(1)
 const message = useMessage()
 const data = ref([])
 const totalPages = ref(0)
 const columns = [
   {
-    title: '头像',
-    key: 'avatar_url',
+    title: '轮播图片',
+    key: 'img',
     render (row) {
-      return h(NAvatar,{round:true,src:row.avatar_url,size:'medium'})
+      return h(NImage,{round:true,src:row.img_url,width:'100'})
     }
   },
   {
-    title: '姓名',
-    key: 'name'
+    title: '标题',
+    key: 'title'
   },
   {
-    title: '邮箱',
-    key: 'email'
+    title: '跳转链接',
+    key: 'url',
+    width:'300'
   },
   {
     title: '是否禁用',
-    key: 'is_locked',
+    key: 'status',
     render(row){
       return h(NSwitch,{
         size:'medium',
@@ -93,13 +70,17 @@ const columns = [
         inactiveColor:'#d9d9d9',
         activeValue:1,
         inactiveValue:0,
-        value:row.is_locked == 1 ? false : true,
+        value:row.status == 0 ? false : true,
       })
     }
   },
   {
-    title: '创建时间',
-    key: 'created_at',
+    title: '排序',
+    key: 'seq',
+  },
+  {
+    title: '更新时间',
+    key: 'updated_at',
   },
   {
     title: '操作',
@@ -114,6 +95,7 @@ const columns = [
           showEditModal.value = true
         }
       },'编辑')
+
     }}
 ]
 const pagination = ref(false as const)
@@ -160,10 +142,10 @@ const searchReload = ()=>{
 }
 const getUserList = (params) =>{
   loadingBar.start()
-  users(params).then(users =>{
-    data.value = users.data
-    totalPages.value = users.meta.pagination.total_pages
-    page.value = users.meta.pagination.current_page
+  slides(params).then(res =>{
+    data.value = res.data
+    totalPages.value = res.meta.pagination.total_pages
+    page.value = res.meta.pagination.current_page
     loadingBar.finish()
   }).catch(err=>{
     loadingBar.error()
