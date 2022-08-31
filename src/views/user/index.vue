@@ -64,7 +64,7 @@ import { h,ref,onMounted} from 'vue'
 import { NButton, useMessage,NAvatar,NSwitch,useLoadingBar } from 'naive-ui'
 import AddUser from './components/AddUser.vue'
 import EditUser from './components/EditUser.vue'
-import { users } from '@/api/users'
+import { users,getUserLock } from '@/api/users'
 const page = ref(1)
 const message = useMessage()
 const data = ref([])
@@ -102,7 +102,13 @@ const columns = [
         inactiveColor:'#d9d9d9',
         activeValue:1,
         inactiveValue:0,
-        value:row.is_locked == 0 ? false : true,
+        value:row.is_locked == 1 ? false : true,
+        onClick:()=>{
+          console.log(row.is_locked,'row.isload')
+          row.is_locked==0?row.is_locked=1:row.is_locked=0
+          console.log(row.is_locked,'row.isload')
+          handleChange(row)
+        }
       })
     }
   },
@@ -182,6 +188,13 @@ const getUserList = (params) =>{
     loadingBar.finish()
   }).catch(err=>{
     loadingBar.error()
+  })
+  // getUserLock(user_id)
+}
+const handleChange = (row) => {
+  getUserLock(row.id).then(()=>{
+    //可以在此处设置验证是否进行状态的修改
+    message.info('禁用状态已修改')
   })
 }
 const checkShowModal = (status)=>{

@@ -13,7 +13,7 @@
         aria-modal="true"
     >
       <template #header-extra>
-        <span @click="$emit('checkShowModal',false)">X</span>
+        <n-button type="error"  @click="$emit('checkShowModal',false)">X</n-button>
       </template>
       <n-form v-if="showForm"  ref="formRef" :model="model" :rules="rules">
         <n-form-item path="name" label="姓名">
