@@ -12,37 +12,38 @@
         role="dialog"
         aria-modal="true"
     >
-      <template #header-extra>
+      <template  #header-extra>
         <n-button type="error"  @click="$emit('checkShowModal',false)">X</n-button>
       </template>
       <n-form  ref="formRef" :model="model" :rules="rules">
-        <n-form-item path="name" label="姓名">
-          <n-input v-model:value="model.name" placeholder="请输入姓名" />
+        <n-form-item path="pid" label="父级分类">
+          <n-input v-model:value="model.pid" placeholder="选择分类，不选则创建顶级分类" />
         </n-form-item>
-        <n-form-item path="email" label="邮箱"  >
+        <n-form-item path="pid" label="上级分类">
+          <n-dropdown
+              v-model:options="data.value"
+              placement="bottom-start"
+              trigger="click"
+              @select="handleSelect"
+          >
+            <n-button>--根分类--</n-button>
+          </n-dropdown>
+        </n-form-item>
+        <n-form-item path="name" label="分类名称"  >
           <n-input
-              v-model:value="model.email"
-              type="email"
-              placeholder="请输入邮箱"
+              v-model:value="model.name"
+              type="name"
+              placeholder="请输入"
           />
         </n-form-item>
-        <n-form-item
-            path="password"
-            label="密码"
-        >
-          <n-input
-              v-model:value="model.password"
-              type="password"
-              placeholder="请输入密码"
-          />
-        </n-form-item>
+
         <n-row :gutter="[0, 24]">
           <n-col :span="24">
             <div style="display: flex; justify-content: flex-end">
               <n-button
                   round
                   type="primary"
-                  @click="userSubmit"
+                  @click="CategorySubmit"
               >
                 添加
               </n-button>
@@ -56,43 +57,44 @@
 
 <script setup>
 import { h, ref,defineProps,defineEmits } from 'vue'
-import { addCategory } from "@/api/category";
+import {addCategory} from "@/api/Category";
+// import {columns} from "../index"
 const props =  defineProps({
   showModal: {
     type: Boolean,
     default: false
+  },
+  data:{
+    type:Object,
+    default: {}
   }
-})
-const emit = defineEmits(['checkShowModal','shuaxin'])
 
+})
+
+const emit = defineEmits(['checkShowModal','shuaxin'])
 const model = ref({
   name: null,
-  email: null,
-  password: null
+  pid: null,
+  group:null
 })
 const rules = {
+  pid: [
+    {
+      required: false,
+      message: '请输入父类名称'
+    }
+  ],
   name: [
     {
       required: true,
-      message: '请输入姓名'
-    }
-  ],
-  email: [
-    {
-      required: true,
-      message: '请输入邮箱'
-    }
-  ],
-  password: [
-    {
-      required: true,
-      message: '请输入密码'
+      message: '请输入名称'
     }
   ],
 }
+console.log(model.value);
 const formRef = ref()
-const userSubmit = (e)=>{
-  e.preventDefault()
+const CategorySubmit = (e)=>{
+  // e.preventDefault()
   formRef.value.validate(errors=>{
     if(errors){
       console.log(errors)
@@ -104,6 +106,7 @@ const userSubmit = (e)=>{
     }
   })
 }
+
 
 </script>
 

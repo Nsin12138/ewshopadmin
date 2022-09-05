@@ -15,8 +15,8 @@
           <n-data-table
               :columns="columns"
               :data="data"
-
-              :bordered="false"
+              :default-expand-all="true"
+              :cascade="false"
           />
           <div class="p-4 flex justify-end pr-10">
             <!--            分页组件  绑定数据                 	当前页发生改变时的回调函数-->
@@ -31,36 +31,67 @@
 
 <script lang="ts" setup>
 import { h,ref,onMounted} from 'vue'
-import { NButton, useMessage, useLoadingBar } from 'naive-ui'
-import { category } from '@/api/category'
+import { NButton,NInputNumber, useMessage, useLoadingBar } from 'naive-ui'
+import { category,getCategorySeq} from '@/api/category'
 import AddCategory from "@/views/category/components/AddCategory.vue";
+
 const page = ref(1)
 const message = useMessage()
 const data = ref([])
 const totalPages = ref(0)
+
 const columns = [
-      {
-        type: 'selection'
-      },
+
       {
         title: '分类名称',
-        key: 'name'
+        key: 'name',
+        width:'60%',
       },
       {
-        title: '状态',
-        key: 'status'
-      }
+        title: '分类排序',
+        key: 'seq',
+        render(row) {
+          return h(NInputNumber,{
+            style:'max-width:20%',
+            defaultValue:row.seq,
+            showButton:false,
+            max:42,
+            value:1,
+            updateValueOnInput:false,
+            blur:handleBlur,
+            onBlur:()=>{
+              row.seq = row.value
+              console.log(blur)
+              // handleChange(row)
+              handleBlur(row)
+            }
+          })
+        }
+      },
+      {
+        title: '操作',
+        key: 'created_at',
+        align:'center',
+        render(row){
+        return h(NButton,{
+        size:'small',
+        color:'#1890ff',
+        strong:true,
+        onClick:()=>{
+          category_id.value = row.id
+          showEditModal.value = true
+        }
+      },'修改')
+    }}
 ]
-const rowKey = ref(false as const)
 
 // 添加模态框显示状态
 const showModal = ref(false)
 // 编辑模态框
 const showEditModal = ref(false)
 
-
-
 const loadingBar = useLoadingBar()
+const category_id = ref('')
 
 onMounted(()=>{
   getCategoryList({type:'all'})
@@ -68,42 +99,36 @@ onMounted(()=>{
 const updatePage = (pageNum) => {
   getCategoryList({
     current:pageNum,
-    // name:formSearch.value.name,
-    // email:formSearch.value.email
   })
 }
-// const searchSubmit = (e) =>{
-//   e.preventDefault()
-//   getUserList({
-//     name:formSearch.value.name,
-//     email:formSearch.value.email,
-//     current:1
-//   })
+
 // }
-// const searchReload = ()=>{
-//   getUserList({})
-//   formSearch.value = {
-//     // 重置后，进行搜索框清空
-//     name:'',
-//     email:''
-//   }
-// }
-const getCategoryList = (params) =>{
+const  getCategoryList = async (params) =>{
   loadingBar.start()
-  category(params).then(category =>{
+  const res = await category(params)
     console.log(category,'cartegory')
-    data.value=category
+    data.value = res
     console.log(data.value);
-    // data.map(item=>{
-    //   console.log(item)
-    // })
-    // totalPages.value = goods.meta.pagination.total_pages
-    // page.value = goods.meta.pagination.current_page
-    loadingBar.finish()
-  }).catch(err=>{
-    loadingBar.error()
+}
+
+/*const handleChange = (row) => {
+  getCategorySeq(row.id,seq).then(()=>{
+    row.seq = row.value
+    //可以在此处设置验证是否进行状态的修改
+    message.info('排序状态已修改')
+  })
+}*/
+const handleBlur = (row) => {
+  // const seq = row.value
+
+  getCategorySeq(row.id,row.seq).then(()=>{
+
+    //可以在此处设置验证是否进行状态的修改
+    console.log(row,'rowseq')
+    message.info('排序状态已修改')
   })
 }
+
 const checkShowModal = (status)=>{
   showModal.value = status
 }
@@ -114,18 +139,11 @@ const reload = ()=>{
     // email:formSearch.value.email
   })
 }
-// const checkShowModal = (status)=>{
-//   showModal.value = status
-// }
-// const reload = ()=>{
-//   getUserList({
-//     current:page.value,
-//     name:formSearch.value.name,
-//     email:formSearch.value.email
-//   })
-// }
+
 </script>
 
 <style scoped>
-
+.n-data-table-tr>th:first-child{
+  width: 70%;
+}
 </style>

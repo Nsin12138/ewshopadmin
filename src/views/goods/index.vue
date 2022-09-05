@@ -17,11 +17,11 @@
             :model="formSearch"
             label-placement="left"
         >
-          <n-form-item label="姓名" path="name">
-            <n-input v-model:value="formSearch.name" placeholder="输入姓名" />
+          <n-form-item label="商品名：" path="name">
+            <n-input v-model:value="formSearch.title" placeholder="请输入" />
           </n-form-item>
-          <n-form-item label="邮箱" path="email">
-            <n-input v-model:value="formSearch.email" placeholder="请输入邮箱" />
+          <n-form-item label="是否上架">
+
           </n-form-item>
 
           <n-form-item class="ml-auto">
@@ -36,7 +36,7 @@
       </div>
       <div class="mt-4 bg-white">
         <div class="text-xl px-6 py-4 flex ">
-          <span>用户列表</span>
+          <span>商品列表</span>
           <span class="ml-auto"><NButton type="info" @click="showModal = true" >+ 新建</NButton></span>
         </div>
         <div>
@@ -52,8 +52,8 @@
           </div>
         </div>
       </div>
-      <AddUser :showModal="showModal" @checkShowModal="checkShowModal" @reloadTable="reload"></AddUser>
-      <EditUser v-if="showEditModal"  :user_id="user_id" :showModal="showEditModal" @checkShowModal="checkEditModal" @reloadTable="reload"></EditUser>
+      <AddGood :showModal="showModal" @checkShowModal="checkShowModal" @reloadTable="reload"></AddGood>
+      <EditGood v-if="showEditModal"  :Good_id="Good_id" :showModal="showEditModal" @checkShowModal="checkEditModal" @reloadTable="reload"></EditGood>
     </div>
   </div>
 </template>
@@ -61,9 +61,9 @@
 <script lang="ts" setup>
 import { h,ref,onMounted } from 'vue'
 import { NButton, useMessage,NImage,NSwitch,useLoadingBar } from 'naive-ui'
-import AddUser from './components/AddGood.vue'
-import EditUser from './components/EditGood.vue'
-import { goods } from '@/api/goods'
+import AddGood from './components/AddGood.vue'
+import EditGood from './components/EditGood.vue'
+import { goods,getGoodLock,recommendGood } from '@/api/goods'
 const page = ref(1)
 const message = useMessage()
 const data = ref([])
@@ -72,29 +72,35 @@ const columns = [
   {
     title: '图片',
     key: 'cover',
+    align:'center',
     render (row) {
       return h(NImage,{round:true,src:row.cover_url,width:'60'})
     }
   },
   {
     title: '商品名',
-    key: 'title'
+    key: 'title',
+    align:'center',
   },
   {
     title: '价格',
-    key: 'price'
+    key: 'price',
+    align:'center',
   },
   {
     title: '库存',
-    key: 'stock'
+    key: 'stock',
+    align:'center',
   },
   {
     title: '销量',
-    key: 'sales'
+    key: 'sales',
+    align:'center',
   },
   {
     title: '是否上架',
     key: 'is_on',
+    align:'center',
     render(row){
       return h(NSwitch,{
         size:'medium',
@@ -104,12 +110,19 @@ const columns = [
         activeValue:1,
         inactiveValue:0,
         value:row.is_on == 1 ? false : true,
+        onClick:()=>{
+          // console.log(row.is_locked,'row.isload')
+          row.is_on==0 ? row.is_on=1 : row.is_on=0
+          // console.log(row.is_locked,'row.isload')
+          handleChangeOn(row)
+        }
       })
     }
   },
   {
     title: '是否推荐',
     key: 'is_recommend',
+    align:'center',
     render(row){
       return h(NSwitch,{
         size:'medium',
@@ -119,23 +132,31 @@ const columns = [
         activeValue:1,
         inactiveValue:0,
         value:row.is_recommend == 1 ? false : true,
+        onClick:()=>{
+          // console.log(row.is_locked,'row.isload')
+          row.is_recommend==0?row.is_recommend=1:row.is_recommend=0
+          // console.log(row.is_locked,'row.isload')
+          handleChange(row)
+        }
       })
     }
   },
   {
     title: '创建时间',
     key: 'created_at',
+    align:'center',
   },
   {
     title: '操作',
     key: 'created_at',
+    align:'center',
     render(row){
       return h(NButton,{
         size:'small',
         color:'#1890ff',
         strong:true,
         onClick:()=>{
-          user_id.value = row.id
+          Good_id.value = row.id
           showEditModal.value = true
         }
       },'编辑')
@@ -151,7 +172,7 @@ const showModal = ref(false)
 // 编辑模态框
 const showEditModal = ref(false)
 
-const user_id = ref('')
+const Good_id = ref('')
 
 const checkEditModal = (show:boolean) => {
   showEditModal.value = show
@@ -159,10 +180,10 @@ const checkEditModal = (show:boolean) => {
 const loadingBar = useLoadingBar()
 
 onMounted(()=>{
-  getUserList({})
+  getGoodList({})
 })
 const updatePage = (pageNum) => {
-  getUserList({
+  getGoodList({
     current:pageNum,
     name:formSearch.value.name,
     email:formSearch.value.email
@@ -170,20 +191,20 @@ const updatePage = (pageNum) => {
 }
 const searchSubmit = (e) =>{
   e.preventDefault()
-  getUserList({
+  getGoodList({
     name:formSearch.value.name,
     email:formSearch.value.email,
     current:1
   })
 }
 const searchReload = ()=>{
-  getUserList({})
+  getGoodList({})
   formSearch.value = {
     name:'',
     email:''
   }
 }
-const getUserList = (params) =>{
+const getGoodList = (params) =>{
   loadingBar.start()
   goods(params).then(goods =>{
     data.value = goods.data
@@ -194,11 +215,27 @@ const getUserList = (params) =>{
     loadingBar.error()
   })
 }
+
+// 上架和下架状态更改方法
+const handleChangeOn = (row) => {
+  getGoodLock(row.id).then(()=>{
+    //可以在此处设置验证是否进行状态的修改
+    message.info('上架状态已修改')
+  })
+}
+// 推荐和不推荐状态更改方法
+const handleChange = (row) => {
+  recommendGood(row.id).then(()=>{
+    message.info('推荐状态已修改')
+  })
+}
+
+
 const checkShowModal = (status)=>{
   showModal.value = status
 }
 const reload = ()=>{
-  getUserList({
+  getGoodList({
     current:page.value,
     name:formSearch.value.name,
     email:formSearch.value.email

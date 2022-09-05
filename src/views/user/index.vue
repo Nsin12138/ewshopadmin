@@ -42,7 +42,7 @@
         <div>
 
           <n-data-table
-              :columns="columns"
+              v-model:columns="columns"
               :data="data"
               :pagination="pagination"
               :bordered="false"
@@ -132,7 +132,7 @@ const columns = [
           showEditModal.value = true
         }
       },'编辑')
-    }}
+    }},
 ]
 const pagination = ref(false as const)
 const formSearch = ref({

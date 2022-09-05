@@ -29,7 +29,7 @@ export  function addGood(data) {
 export  function getGoodInfo(goodid) {
     return request(
         {
-            url: `/api/admin/users/${goodid}`,
+            url: `/api/admin/goodss/${goodid}`,
             method: 'GET',
         }
     );
@@ -40,7 +40,7 @@ export  function getGoodInfo(goodid) {
 export  function changeGood(goodid, data) {
     return request(
         {
-            url: `/api/admin/users/${goodid}`,
+            url: `/api/admin/goods/${goodid}`,
             method: 'PUT',
             data
         }
@@ -49,10 +49,10 @@ export  function changeGood(goodid, data) {
 
 
 // 上架和下架
-export  function getGoodLock(userid) {
+export  function getGoodLock(goodid) {
     return request(
         {
-            url: `/api/admin/users/${userid}/on`,
+            url: `/api/admin/goods/${goodid}/on`,
             method: 'PATCH',
         }
     );
@@ -62,7 +62,7 @@ export  function getGoodLock(userid) {
 export  function recommendGood(goodid) {
     return request(
         {
-            url: `/api/admin/users/${goodid}`,
+            url: `/api/admin/goods/${goodid}/recommend`,
             method: 'PATCH',
 
         }

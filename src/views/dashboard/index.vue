@@ -34,16 +34,18 @@
           header-style="background-color:#f9fbfe;padding:10px;border-bottom:1px solid #bed0ea"
           content-style="padding:5px 20px"
       >
-        <div style="display: flex" class="goods">
-          <div style="width: 50%">
-            <div  v-for="item in stat">
-              <span >{{item.title}}</span>
-            </div>
+        <div  class="goods">
+          <div>
+            <div>上架商品</div><div><span>{{goods_info.on_nums}}</span>件</div>
           </div>
-          <div style="width: 50%">
-            <div style="text-align: right"  v-for="item in goods_info">
-              <b style="text-align: right;color:green;">{{item}}</b>件
-            </div>
+          <div>
+            <div>下架商品</div><div><span>{{goods_info.un_nums}}</span>件</div>
+          </div>
+          <div>
+            <div>缺货商品</div><div><span>{{goods_info.stock_null}}</span>件</div>
+          </div>
+          <div>
+            <div>推荐商品</div><div><span>{{goods_info.recommend_nums}}</span>件</div>
           </div>
         </div>
       </n-card>
@@ -60,16 +62,18 @@
           header-style="background-color:#f9fbfe;padding:10px;border-bottom:1px solid #bed0ea"
           content-style="padding:5px 20px"
       >
-        <div style="display: flex" class="goods">
-          <div style="width: 50%">
-            <div  v-for="item in stat1">
-              <span >{{item.title}}</span>
-            </div>
+        <div  class="goods">
+          <div>
+            <div>今日访客</div><div><span>{{users_info.today_nums}}</span>人</div>
           </div>
-          <div style="width: 50%">
-            <div style="text-align: right"  v-for="item in users_info">
-              <b style="text-align: right;color:green;">{{item}}</b>件
-            </div>
+          <div>
+            <div>昨日访客</div><div><span>{{users_info.yesterday_nums}}</span>人</div>
+          </div>
+          <div>
+            <div>累计访客</div><div><span>{{users_info.total_nums}}</span>人</div>
+          </div>
+          <div>
+            <div>累计注册</div><div><span>{{users_info.reg_nums}}</span>人</div>
           </div>
         </div>
       </n-card>
@@ -88,10 +92,37 @@
                 footer: 'soft'
             }"
                 header-style="background-color:#f9fbfe;padding:10px;border-bottom:1px solid #bed0ea"
-
-
         >
-          <p v-for="item in Systems" :key="item.id">{{item.title}}：<a :href="item.url">{{item.value}}</a></p>
+          <n-table  :single-line="false" style="text-align: center">
+            <thead>
+            <tr>
+              <th></th>
+              <th>订单总数</th>
+              <th>订单总额</th>
+
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+              <td>今日订单</td>
+              <td>{{order_info.today.nums}}个</td>
+              <td>￥{{order_info.today.total_price}}</td>
+
+            </tr>
+            <tr>
+              <td>昨日订单</td>
+              <td>{{order_info.yesterday.nums}}个</td>
+              <td>￥{{order_info.yesterday.total_price}}</td>
+
+            </tr>
+            <tr>
+              <td>全部订单</td>
+              <td>{{order_info.total.nums}}个</td>
+              <td>￥{{order_info.total.total_price}}</td>
+            </tr>
+            </tbody>
+
+          </n-table>
           <!--          <p>开发团队：<a href="https://www.lmonkey.com/">学习猿地</a> </p>
                     <p>邮箱：<u>ewshop@eduwork.cn</u></p>
                     <p>Q Q：<a href="#"> 779050720</a></p>-->
@@ -103,26 +134,19 @@
 </template>
 
 <script lang="ts" setup>
-import {onMounted, ref,toRefs} from "vue";
+import {onMounted, ref} from "vue";
 import {stats} from "@/api/stat";
 
-const goods_info = ref([])
-const users_info = ref([])
-const order_info = ref([])
-
-const stat = [
-  {id:1,title:'上架商品'},
-  {id:2,title:'下架商品'},
-  {id:3,title:'缺货商品'},
-  {id:4,title:'推荐商品数量'}
-]
-const stat1 = [
-  {id:1,title:'今日商品'},
-  {id:2,title:'昨日商品'},
-  {id:3,title:'累计访客'},
-  {id:4,title:'累计注册'}
-]
-
+const goods_info = ref({})
+const users_info = ref({})
+const order_info = ref({
+  today:{},
+  yesterday:{},
+  total:{},
+})
+onMounted(()=>{
+  getNum({})
+})
 const getNum = (params) =>{
   stats(params).then(res => {
     goods_info.value = res.goods_info
@@ -131,22 +155,12 @@ const getNum = (params) =>{
   })
 }
 
-onMounted(()=>{
-  getNum({})
-})
-
 const Systems = [
     {id:1,title:'软件版本',value:'EWShop1.0教学版',url:"https://www.eduwork.cn/"},
     {id:2,title:'开发团队',value:'学习猿地',url:"https://www.lmonkey.com/"},
     {id:3,title:'邮箱',value:'ewshop@eduwork.cn',url: '#'},
-    {id:4,title:'Q Q',value:'779050720',url:'#'},
+    {id:4,title:'微信',value:'gaoluofeng',url:'#'},
   ]
-
-
-
-
-
-
 
 </script>
 
@@ -170,15 +184,30 @@ const Systems = [
   color: orangered;
   text-decoration: none;
 }
-.goods > div >div:not(:last-child){
+.goods > div:not(:last-child){
   border-bottom: 1px dashed #ccc;
 }
-.goods > div > div {
+.goods > div{
+  display: flex;
+  justify-content:space-between ;
+}
+.goods > div {
   height: 50px;
   line-height: 50px;
 }
+.goods > div > div span, tbody > tr > td:nth-child(2){
+  color: green;
+  font-weight: bold
+}
+tbody > tr > td:nth-child(3){
+  color: red;
+  font-weight: bold
+}
 .n-card > .n-card-header{
   padding: 10px;
+}
+thead th {
+  background-color: #DEECF4
 }
 
 </style>

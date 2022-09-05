@@ -16,14 +16,14 @@
         <n-button type="error"  @click="$emit('checkShowModal',false)">X</n-button>
       </template>
       <n-form  ref="formRef" :model="model" :rules="rules">
-        <n-form-item path="title" label="标题">
-          <n-input v-model:value="model.title" placeholder="请输入标题" />
+        <n-form-item path="name" label="名称">
+          <n-input v-model:value="model.name" placeholder="请输入" />
         </n-form-item>
-        <n-form-item path="url" label="跳转URL"  >
+        <n-form-item path="url" label="跳转链接URL"  >
           <n-input
               v-model:value="model.url"
               type="email"
-              placeholder="请输入跳转URL"
+              placeholder="跳转链接URL"
           />
         </n-form-item>
         <n-form-item label="是否启用" path="status">
@@ -47,7 +47,7 @@
               <n-button
                   round
                   type="primary"
-                  @click="slideSubmit"
+                  @click="linkSubmit"
               >
                 添加
               </n-button>
@@ -61,7 +61,7 @@
 
 <script setup>
 import { ref } from 'vue'
-import { addSlide } from "@/api/slide";
+import { addLink } from "@/api/link";
 import Upload from '@/components/Upload/index.vue';
 
 const props =  defineProps({
@@ -73,13 +73,13 @@ const props =  defineProps({
 const emit = defineEmits(['checkShowModal','shuaxin'])
 
 const model = ref({
-  title: null,
+  name: null,
   img: null,
   url: null,
   status: null
 })
 const rules = {
-  title: [
+  name: [
     {
       required: true,
       message: '请输入标题'
@@ -105,14 +105,14 @@ const rules = {
   ],
 }
 const formRef = ref()
-const slideSubmit = (e)=>{
+const linkSubmit = (e)=>{
   e.preventDefault()
   formRef.value.validate(errors=>{
     if(errors){
       console.log(errors)
     }else{
       // 请求API 添加数据
-      addSlide(model.value).then(res=>{
+      addLink(model.value).then(res=>{
         console.log(res)
         window.$message.success('添加成功')
         emit('checkShowModal',false)

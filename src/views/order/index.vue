@@ -18,10 +18,10 @@
             label-placement="left"
         >
           <n-form-item label="单号" path="order_no">
-            <n-input v-model:value="formSearch.name" placeholder="请输入" />
+            <n-input v-model:value="formSearch.order_no" placeholder="请输入" />
           </n-form-item>
           <n-form-item label="支付单号" path="trade_no">
-            <n-input v-model:value="formSearch.email" placeholder="请输入" />
+            <n-input v-model:value="formSearch.trade_no" placeholder="请输入" />
           </n-form-item>
 
           <n-form-item class="ml-auto">
@@ -37,7 +37,7 @@
       <div class="mt-4 bg-white">
         <div class="text-xl px-6 py-4 flex ">
           <span>订单列表</span>
-          <span class="ml-auto"><NButton type="info" @click="showModal = true" >+ 新建</NButton></span>
+
         </div>
         <div>
           <n-data-table
@@ -57,7 +57,7 @@
 
 <script lang="ts" setup>
 import { h,ref,onMounted } from 'vue'
-import { NButton, useMessage,NImage,NSwitch,useLoadingBar } from 'naive-ui'
+import { NButton, useMessage,useLoadingBar } from 'naive-ui'
 import { orders } from '@/api/order'
 const page = ref(1)
 const message = useMessage()
@@ -67,45 +67,64 @@ const columns = [
   {
     title: '单号',
     key: 'order_no',
+    align:'center',
   },
   {
     title: '用户',
-    key: 'user.name'
+    key: 'user.name',
+    align:'center',
   },
   {
     title: '金额',
-    key: 'amount'
+    key: 'amount',
+    align:'center',
   },
   {
     title: '状态',
     key: 'status',
-    /*render(row){
-      return h(NButton,{
+    align:'center',
+    render(row){
+      switch (row.status) {
+        case 1:
+         return h(NButton, {size: 'small', dashed:true, type:"error", strong:true,},'下单');
+        case 2:
+          return h(NButton, {size: 'small', dashed:true, type:"primary", strong:true,},'支付');
+        case 3:
+          return h(NButton, {size: 'small', dashed:true,type:"info", strong:true,},'发货');
+        case 4:
+          return h(NButton, {size: 'small', dashed:true, type:"success", strong:true,},'收货');
+        case 5:
+          return h(NButton, {size: 'small', dashed:true, type:"warning", strong:true,},'过期');
+      }
 
-    })}*/
+    }
   },
   {
     title: '支付时间',
     key: 'pay_time',
+    align:'center',
   },
   {
     title: '支付类型',
     key: 'pay_type',
+    align:'center',
   },
   {
     title: '支付单号',
     key: 'trade_no',
+    align:'center',
   },
   {
     title: '操作',
     key: 'created_at',
+    align:'center',
     render(row){
       return h(NButton,{
         size:'small',
         color:'#1890ff',
         strong:true,
         onClick:()=>{
-          user_id.value = row.id
+          Order_id.value = row.id
           showEditModal.value = true
         }
       },'编辑')
@@ -114,51 +133,56 @@ const columns = [
 ]
 const pagination = ref(false as const)
 const formSearch = ref({
-  name:'',
-  email:''
+  order_no:'',
+  trade_no:''
 })
 // 添加模态框显示状态
 const showModal = ref(false)
 // 编辑模态框
 const showEditModal = ref(false)
 
-const user_id = ref('')
+const Order_id = ref('')
 
-const checkEditModal = (show:boolean) => {
-  showEditModal.value = show
-}
+// const checkEditModal = (show:boolean) => {
+//   showEditModal.value = show
+// }
 const loadingBar = useLoadingBar()
 
-onMounted(()=>{
-  getUserList({})
-})
-// const updatePage = (pageNum) => {
-//   getUserList({
-//     current:pageNum,
-//     name:formSearch.value.name,
-//     email:formSearch.value.email
-//   })
-// }
-// const searchSubmit = (e) =>{
-//   e.preventDefault()
-//   getUserList({
-//     name:formSearch.value.name,
-//     email:formSearch.value.email,
-//     current:1
-//   })
-// }
-const searchReload = ()=>{
-  getUserList({})
-  formSearch.value = {
-    name:'',
-    email:''
-  }
+const params={
+  include:'goods,user,orderDetails' // 订单详情里包含商品信息
 }
-const getUserList = () =>{
+onMounted(()=>{
+  getOrderList(params)
+})
+const updatePage = (pageNum) => {
+  getOrderList({
+    current:pageNum,
+    order_no:formSearch.value.order_no,
+    trade_no:formSearch.value.trade_no,
+    include:params.include
+  })
+}
+const searchSubmit = (e) =>{
+  e.preventDefault()
+  getOrderList({
+    order_no:formSearch.value.order_no,
+    trade_no:formSearch.value.trade_no,
+    current:1,
+    include:params.include
+  })
+}
+/*const searchReload = (params)=>{
+  getOrderList(params)
+  formSearch.value = {
+    order_no:'',
+    trade_no:''
+  }
+}*/
+const getOrderList = (params) =>{
   loadingBar.start()
-  orders().then(res =>{
-    console.log(res,'userlist');
+  orders(params).then(res =>{
     data.value = res.data
+    console.log(data,'data')
     totalPages.value = res.meta.pagination.total_pages
     page.value = res.meta.pagination.current_page
     loadingBar.finish()
@@ -169,13 +193,14 @@ const getUserList = () =>{
 const checkShowModal = (status)=>{
   showModal.value = status
 }
-// const reload = ()=>{
-//   getUserList({
-//     current:page.value,
-//     name:formSearch.value.name,
-//     email:formSearch.value.email
-//   })
-// }
+const reload = ()=>{
+  getOrderList({
+    current:page.value,
+    order_no:formSearch.value.order_no,
+    trade_no:formSearch.value.trade_no,
+    include:params.include
+  })
+}
 </script>
 
 <style scoped>

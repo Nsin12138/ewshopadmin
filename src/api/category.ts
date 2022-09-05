@@ -20,7 +20,7 @@ export  function addCategory(data) {
         {
             url: '/api/admin/category',
             method: 'POST',
-            data,
+            data
         }
     );
 }
@@ -59,11 +59,12 @@ export  function getCategoryLock(categoryid) {
 }
 
 // 分类排序
-export  function getCategorySeq(categoryid) {
+export  function getCategorySeq(categoryid,seq) {
     return request(
         {
             url: `/api/admin/category/${categoryid}/seq`,
             method: 'PATCH',
+            data:seq
         }
     );
 }

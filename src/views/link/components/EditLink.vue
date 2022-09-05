@@ -6,25 +6,28 @@
   >
     <n-card
         style="width: 600px"
-        title="编辑商品"
+        title="编辑友情链接"
         :bordered="false"
         size="huge"
         role="dialog"
         aria-modal="true"
     >
       <template #header-extra>
-        <span @click="$emit('checkShowModal',false)">X</span>
+        <n-button type="error"  @click="$emit('checkShowModal',false)">X</n-button>
       </template>
-      <n-form v-if="showForm"  ref="formRef" :model="model" :rules="rules">
-        <n-form-item path="name" label="姓名">
-          <n-input v-model:value="model.name" placeholder="请输入姓名" />
+      <n-form  ref="formRef" :model="model" :rules="rules">
+        <n-form-item path="name" label="名称">
+          <n-input v-model:value="model.name" placeholder="请输入" />
         </n-form-item>
-        <n-form-item path="email" label="邮箱"  >
+        <n-form-item path="url" label="跳转链接URL"  >
           <n-input
-              v-model:value="model.email"
+              v-model:value="model.url"
               type="email"
-              placeholder="请输入邮箱"
+              placeholder="跳转链接URL"
           />
+        </n-form-item>
+        <n-form-item label="选择商品图" path="img">
+          <Upload @backKey="backKey"></Upload>
         </n-form-item>
         <n-row :gutter="[0, 24]">
           <n-col :span="24">
@@ -32,7 +35,7 @@
               <n-button
                   round
                   type="primary"
-                  @click="userSubmit"
+                  @click="linkSubmit"
               >
                 提交
               </n-button>
@@ -40,37 +43,41 @@
           </n-col>
         </n-row>
       </n-form>
-      <n-skeleton v-else text :repeat="2" />
     </n-card>
   </n-modal>
 </template>
 
 <script setup>
 import { h, ref,defineProps,defineEmits,onMounted } from 'vue'
-import {addGood,getGoodInfo,changeGood} from "@/api/goods";
+import {addLink,getLinksInfo,changeLink} from "@/api/link";
 const props =  defineProps({
   showModal: {
     type: Boolean,
     default: false
   },
-  user_id:{
+  link_id:{
     type: Number,
     default: ''
   }
 })
 const model = ref({
   name: null,
-  email: null,
+  img: null,
+  url: null,
+  status: null
 })
 const showForm = ref(false)
 const emit = defineEmits(['checkShowModal','shuaxin'])
 onMounted(()=>{
   console.log(123123)
-  if(props.user_id){
-    getGoodInfo(props.user_id).then(res=>{
+  if(props.link_id){
+    getLinksInfo(props.link_id).then(res=>{
       model.value.name = res.name
-      model.value.email = res.email
+      model.value.url = res.url
+      model.value.img = res.img
+      model.value.status = res.status
       showForm.value = true
+      console.log(res)
     })
   }
 })
@@ -79,30 +86,46 @@ const rules = {
   name: [
     {
       required: true,
-      message: '请输入姓名'
+      message: '请输入标题'
     }
   ],
-  email: [
+  img: [
     {
       required: true,
-      message: '请输入邮箱'
+      message: '请上传图片'
     }
-  ]
+  ],
+  url: [
+    {
+      required: true,
+      message: '输入输入跳转链接'
+    }
+  ],
+  status: [
+    {
+      required: true,
+      message: '请选择状态'
+    }
+  ],
 }
 const formRef = ref()
-const userSubmit = (e)=>{
+const linkSubmit = (e)=>{
   e.preventDefault()
   formRef.value.validate(errors=>{
     if(errors){
       console.log(errors)
     }else{
-      changeGood(props.user_id,model.value).then(res=>{
+      changeLink(props.link_id,model.value).then(res=>{
         window.$message.success('修改成功')
         emit('checkShowModal',false)
         emit('reloadTable')
       })
     }
   })
+}
+
+const backKey = (key)=>{
+  model.value.img = key
 }
 
 </script>

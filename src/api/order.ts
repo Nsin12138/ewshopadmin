@@ -6,14 +6,12 @@ import request from "@/utils/request";
  * */
 
 // 订单列表
-export function orders(){
+export function orders(params){
     return request(
         {
             url:'/api/admin/orders',
             method:'GET',
-            params:{
-                include:'user, orderDetails.goods' // 订单详情里包含商品信息
-            }
+            params
         }
     );
 }

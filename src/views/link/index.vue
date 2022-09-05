@@ -2,9 +2,9 @@
   <div>
     <div class="h-24 w-full bg-white p-3 mb-6">
       <div>
-        <span class="text-slate-400 pr-1">首页</span> / <span class="pl-1 font-bold">轮播管理</span>
+        <span class="text-slate-400 pr-1">首页</span> / <span class="pl-1 font-bold">友链管理</span>
         <div class="pt-3 text-xl text-black font-bold">
-          轮播管理
+          友链管理
         </div>
       </div>
     </div>
@@ -12,7 +12,7 @@
 
       <div class="mt-4 bg-white">
         <div class="text-xl px-6 py-4 flex ">
-          <span>轮播图列表</span>
+          <span>友情链接列表</span>
           <span class="ml-auto"><NButton type="info" @click="showModal = true" >+ 新建</NButton></span>
         </div>
         <div>
@@ -28,7 +28,8 @@
           </div>
         </div>
       </div>
-      <AddSlide :showModal="showModal" @checkShowModal="checkShowModal" @reloadTable="reload"></AddSlide>
+      <AddLink :showModal="showModal" @checkShowModal="checkShowModal" @reloadTable="reload"></AddLink>
+      <EditLink v-if="showEditModal"  :link_id="link_id" :showModal="showEditModal" @checkShowModal="checkEditModal" @reloadTable="reload"></EditLink>
     </div>
   </div>
 </template>
@@ -36,9 +37,10 @@
 <script lang="ts" setup>
 import { h,ref,onMounted } from 'vue'
 import { NButton, useMessage,NImage,NSwitch,useLoadingBar } from 'naive-ui'
-import AddSlide from './components/AddSlide.vue'
-import { slides,getSlideLock } from '@/api/slide'
-import {getUserLock} from "@/api/users";
+import AddLink from './components/AddLink.vue'
+import EditLink from './components/EditLink.vue'
+import { links,getLinkLock } from '@/api/link'
+// import {getLinkLock} from "@/api/links";
 const page = ref(1)
 const message = useMessage()
 const data = ref([])
@@ -54,7 +56,7 @@ const columns = [
   },
   {
     title: '标题',
-    key: 'title',
+    key: 'name',
     align:'center',
   },
   {
@@ -62,6 +64,10 @@ const columns = [
     key: 'url',
     align:'center',
     width:'300'
+  },
+  {
+    title: '排序',
+    key:'seq'
   },
   {
     title: '是否禁用',
@@ -86,8 +92,8 @@ const columns = [
     }
   },
   {
-    title: '排序',
-    key: 'seq',
+    title: '创建时间',
+    key: 'created_at',
     align:'center',
   },
   {
@@ -105,7 +111,7 @@ const columns = [
         color:'#1890ff',
         strong:true,
         onClick:()=>{
-          user_id.value = row.id
+          link_id.value = row.id
           showEditModal.value = true
         }
       },'编辑')
@@ -123,7 +129,7 @@ const showModal = ref(false)
 // 编辑模态框
 const showEditModal = ref(false)
 
-const user_id = ref('')
+const link_id = ref('')
 
 const checkEditModal = (show:boolean) => {
   showEditModal.value = show
@@ -131,10 +137,10 @@ const checkEditModal = (show:boolean) => {
 const loadingBar = useLoadingBar()
 
 onMounted(()=>{
-  getUserList({})
+  getLinkList({})
 })
 const updatePage = (pageNum) => {
-  getUserList({
+  getLinkList({
     current:pageNum,
     name:formSearch.value.name,
     email:formSearch.value.email
@@ -142,22 +148,22 @@ const updatePage = (pageNum) => {
 }
 const searchSubmit = (e) =>{
   e.preventDefault()
-  getUserList({
+  getLinkList({
     name:formSearch.value.name,
     email:formSearch.value.email,
     current:1
   })
 }
 const searchReload = ()=>{
-  getUserList({})
+  getLinkList({})
   formSearch.value = {
     name:'',
     email:''
   }
 }
-const getUserList = (params) =>{
+const getLinkList = (params) =>{
   loadingBar.start()
-  slides(params).then(res =>{
+  links(params).then(res =>{
     console.log(res);
     data.value = res.data
     totalPages.value = res.meta.pagination.total_pages
@@ -169,7 +175,7 @@ const getUserList = (params) =>{
 }
 
 const handleChange = (row) => {
-  getSlideLock(row.id).then(()=>{
+  getLinkLock(row.id).then(()=>{
     //可以在此处设置验证是否进行状态的修改
     message.info('禁用状态已修改')
   })
@@ -178,7 +184,7 @@ const checkShowModal = (status)=>{
   showModal.value = status
 }
 const reload = ()=>{
-  getUserList({
+  getLinkList({
     current:page.value,
     name:formSearch.value.name,
     email:formSearch.value.email
