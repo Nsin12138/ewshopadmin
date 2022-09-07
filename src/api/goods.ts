@@ -29,7 +29,7 @@ export  function addGood(data) {
 export  function getGoodInfo(goodid) {
     return request(
         {
-            url: `/api/admin/goodss/${goodid}`,
+            url: `/api/admin/goods/${goodid}`,
             method: 'GET',
         }
     );

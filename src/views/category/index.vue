@@ -42,11 +42,11 @@ const totalPages = ref(0)
 
 const columns = [
 
-      {
-        title: '分类名称',
-        key: 'name',
-        width:'60%',
-      },
+  {
+    title: '分类名称',
+    key: 'name',
+    width:'60%',
+  },
       {
         title: '分类排序',
         key: 'seq',
@@ -68,6 +68,7 @@ const columns = [
           })
         }
       },
+
       {
         title: '操作',
         key: 'created_at',
