@@ -16,12 +16,12 @@
         <n-button type="error"  @click="$emit('checkShowModal',false)">X</n-button>
       </template>
       <n-form  ref="formRef" :model="model" :rules="rules">
-        <n-form-item path="category_id" label="分类名">
-          <n-input v-model:value="model.name" placeholder="选择分类" />
+        <n-form-item path="category_id" label="分类id">
+          <n-input v-model:value="model.category_id" placeholder="选择分类" />
         </n-form-item>
         <n-form-item path="title" label="商品名"  >
           <n-input
-              v-model:value="model.email"
+              v-model:value="model.title"
               type="text"
               placeholder="请输入"
           />
@@ -31,23 +31,24 @@
             label="描述"
         >
           <n-input
+              v-model:value="model.description"
               type="textarea"
               placeholder="请输入"
           />
         </n-form-item>
         <n-form-item path="price" label="价格">
-          <n-input type="number" v-model:value="model.name" placeholder="请输入" />
+          <n-input type="number" v-model:value="model.price" placeholder="请输入" />
         </n-form-item>
         <n-form-item path="stock" label="库存">
-          <n-input v-model:value="model.name" placeholder="请输入" />
+          <n-input v-model:value="model.stock" placeholder="请输入" />
         </n-form-item>
-        <n-form-item label="图片上传" path="img">
-          <Upload @backKey="backKey"></Upload>
+        <n-form-item label="图片上传" path="cover">
+          <Upload v-model:value="model.cover" @backKey="backKey"></Upload>
         </n-form-item>
-        <n-form-item path="details" label="详情">
-          <n-input v-model:value="model.name" placeholder="请输入" />
-        </n-form-item>
-        <n-row :gutter="[0, 24]">
+        <n-form path="details" label="详情">
+          <Editor v-model:value="model.details" @backContent="backContent"></Editor>
+        </n-form>
+        <n-row style="margin-top: 10px" :gutter="[0, 24]">
           <n-col :span="24">
             <div style="display: flex; justify-content: flex-end">
               <n-button
@@ -67,8 +68,9 @@
 
 <script setup>
 import { h, ref,defineProps,defineEmits } from 'vue'
-import {addGood} from "@/api/goods";
-import Upload from '@/components/Upload/index.vue';
+import {addGood} from "@/api/goods"
+import Editor from '@/components/Editor/index.vue'
+import Upload from '@/components/Upload/index.vue'
 
 const props =  defineProps({
   showModal: {
@@ -79,52 +81,55 @@ const props =  defineProps({
 const emit = defineEmits(['checkShowModal','shuaxin'])
 
 const model = ref({
-  category_id: null,
-  title: null,
-  description: null,
-  price:null,
-  stock:null,
-  cover:null,
-  details:null
+  data:{
+    category_id: null,
+    title: null,
+    description: null,
+    price:null,
+    stock:null,
+    cover:null,
+    details:null
+  }
 })
+
 const rules = {
-  category_id: [
+  category_id:[
     {
       required: true,
       message: '请输入'
     }
   ],
-  title: [
+  title:[
     {
       required: true,
       message: '请输入'
     }
   ],
-  description: [
+  description:[
     {
       required: true,
       message: '请输入'
     }
   ],
-  price: [
+  price:[
     {
       required: true,
       message: '请输入'
     }
   ],
-  stock: [
+  stock:[
     {
       required: true,
       message: '请输入'
     }
   ],
-  cover: [
+  cover:[
     {
       required: true,
       message: '请输入'
     }
   ],
-  details: [
+  details:[
     {
       required: true,
       message: '请输入'
@@ -134,6 +139,7 @@ const rules = {
 const formRef = ref()
 const userSubmit = (e)=>{
   e.preventDefault()
+  console.log(model)
   formRef.value.validate(errors=>{
     if(errors){
       console.log(errors)
@@ -145,8 +151,12 @@ const userSubmit = (e)=>{
     }
   })
 }
+const backContent = (htmlstring) =>{
+
+  model.value.details = htmlstring
+}
 const backKey = (key)=>{
-  model.value.img = key
+  model.value.cover = key
 }
 </script>
 

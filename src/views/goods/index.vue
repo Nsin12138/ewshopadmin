@@ -53,7 +53,7 @@
         </div>
       </div>
       <AddGood :showModal="showModal" @checkShowModal="checkShowModal" @reloadTable="reload"></AddGood>
-      <EditGood v-if="showEditModal"  :Good_id="Good_id" :showModal="showEditModal" @checkShowModal="checkEditModal" @reloadTable="reload"></EditGood>
+      <EditGood v-if="showEditModal"  :good_id="good_id" :showModal="showEditModal" @checkShowModal="checkEditModal" @reloadTable="reload"></EditGood>
     </div>
   </div>
 </template>
@@ -156,7 +156,7 @@ const columns = [
         color:'#1890ff',
         strong:true,
         onClick:()=>{
-          Good_id.value = row.id
+          good_id.value = row.id
           showEditModal.value = true
         }
       },'编辑')
@@ -164,15 +164,15 @@ const columns = [
 ]
 const pagination = ref(false as const)
 const formSearch = ref({
-  name:'',
-  email:''
+  title:'',
+
 })
 // 添加模态框显示状态
 const showModal = ref(false)
 // 编辑模态框
 const showEditModal = ref(false)
 
-const Good_id = ref('')
+const good_id = ref('')
 
 const checkEditModal = (show:boolean) => {
   showEditModal.value = show
@@ -185,23 +185,21 @@ onMounted(()=>{
 const updatePage = (pageNum) => {
   getGoodList({
     current:pageNum,
-    name:formSearch.value.name,
-    email:formSearch.value.email
+    title:formSearch.value.title,
   })
 }
 const searchSubmit = (e) =>{
   e.preventDefault()
   getGoodList({
-    name:formSearch.value.name,
-    email:formSearch.value.email,
+    title:formSearch.value.title,
     current:1
   })
 }
 const searchReload = ()=>{
   getGoodList({})
   formSearch.value = {
-    name:'',
-    email:''
+    title:'',
+
   }
 }
 const getGoodList = (params) =>{
@@ -237,8 +235,7 @@ const checkShowModal = (status)=>{
 const reload = ()=>{
   getGoodList({
     current:page.value,
-    name:formSearch.value.name,
-    email:formSearch.value.email
+    title:formSearch.value.title,
   })
 }
 </script>
