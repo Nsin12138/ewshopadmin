@@ -115,8 +115,17 @@ const columns = [
           showEditModal.value = true
         }
       },'编辑')
-
-    }},
+          /*h(NButton,{
+            size:'small',
+            type:'error',
+            strong:true,
+            onClick:()=>{
+              link_id.value = row.id
+              showEditModal.value = true
+            }
+         } ,'删除')*/
+    },
+  },
 
 ]
 const pagination = ref(false as const)

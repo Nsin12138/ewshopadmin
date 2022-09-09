@@ -21,7 +21,21 @@
             <n-input v-model:value="formSearch.title" placeholder="请输入" />
           </n-form-item>
           <n-form-item label="是否上架">
+            <n-button type="info" v-model:value="data.in_on" size="small" class="mr-4" @click="sellSubmit">
+              出售中商品
+            </n-button>
+            <n-button type="info" size="small" @click="stockSubmit">
+              下架的商品
+            </n-button>
+          </n-form-item>
 
+          <n-form-item label="是否推荐">
+            <n-button type="info" size="small" class="mr-4" @click="recommendSubmit">
+              已推荐
+            </n-button>
+            <n-button type="info" size="small" @click="noRecommendSubmit">
+              未推荐
+            </n-button>
           </n-form-item>
 
           <n-form-item class="ml-auto">
@@ -109,7 +123,7 @@ const columns = [
         inactiveColor:'#d9d9d9',
         activeValue:1,
         inactiveValue:0,
-        value:row.is_on == 1 ? false : true,
+        value:row.is_on == 0 ? false : true,
         onClick:()=>{
           // console.log(row.is_locked,'row.isload')
           row.is_on==0 ? row.is_on=1 : row.is_on=0
@@ -131,7 +145,7 @@ const columns = [
         inactiveColor:'#d9d9d9',
         activeValue:1,
         inactiveValue:0,
-        value:row.is_recommend == 1 ? false : true,
+        value:row.is_recommend == 0 ? false : true,
         onClick:()=>{
           // console.log(row.is_locked,'row.isload')
           row.is_recommend==0?row.is_recommend=1:row.is_recommend=0
@@ -164,7 +178,7 @@ const columns = [
 ]
 const pagination = ref(false as const)
 const formSearch = ref({
-  title:'',
+  title:''
 
 })
 // 添加模态框显示状态
@@ -186,8 +200,43 @@ const updatePage = (pageNum) => {
   getGoodList({
     current:pageNum,
     title:formSearch.value.title,
+
+
   })
 }
+// 已上架按钮功能实现
+const sellSubmit = (e) => {
+  e.preventDefault()
+  getGoodList({
+    is_on: 1,
+    current:1
+  })
+}
+// 未上架按钮功能实现
+const stockSubmit = (e) => {
+  e.preventDefault()
+  getGoodList({
+    is_on: 0,
+    current:1
+  })
+}
+// 已推荐功能实现
+const recommendSubmit = (e) => {
+  e.preventDefault()
+  getGoodList({
+    is_recommend: 1,
+    current:1
+  })
+}
+// 未推荐功能实现
+const noRecommendSubmit = (e) => {
+  e.preventDefault()
+  getGoodList({
+    is_recommend: 0,
+    current:1
+  })
+}
+// 搜索功能实现
 const searchSubmit = (e) =>{
   e.preventDefault()
   getGoodList({
@@ -195,10 +244,11 @@ const searchSubmit = (e) =>{
     current:1
   })
 }
+// 重置功能实现
 const searchReload = ()=>{
   getGoodList({})
   formSearch.value = {
-    title:'',
+    title:''
 
   }
 }

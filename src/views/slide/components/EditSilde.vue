@@ -6,7 +6,7 @@
   >
     <n-card
         style="width: 600px"
-        title="编辑友情链接"
+        title="编辑轮播图"
         :bordered="false"
         size="huge"
         role="dialog"
@@ -16,14 +16,14 @@
         <n-button type="error"  @click="$emit('checkShowModal',false)">X</n-button>
       </template>
       <n-form  ref="formRef" :model="model" :rules="rules">
-        <n-form-item path="name" label="名称">
-          <n-input v-model:value="model.name" placeholder="请输入" />
+        <n-form-item path="title" label="标题">
+          <n-input v-model:value="model.title" placeholder="请输入标题" />
         </n-form-item>
-        <n-form-item path="url" label="跳转链接URL"  >
+        <n-form-item path="url" label="跳转URL"  >
           <n-input
               v-model:value="model.url"
               type="email"
-              placeholder="跳转链接URL"
+              placeholder="请输入跳转URL"
           />
         </n-form-item>
         <n-form-item label="选择商品图" path="img">
@@ -35,7 +35,7 @@
               <n-button
                   round
                   type="primary"
-                  @click="linkSubmit"
+                  @click="slideSubmit"
               >
                 提交
               </n-button>
@@ -56,33 +56,32 @@
 
 <script setup>
 import { h, ref,defineProps,defineEmits,onMounted } from 'vue'
-import {addLink,getLinksInfo,changeLink,delLink} from "@/api/link";
+import {addSlide,getSlidesInfo,changeSlide,delSlide} from "@/api/slide";
 const props =  defineProps({
   showModal: {
     type: Boolean,
     default: false
   },
-  link_id:{
+  slide_id:{
     type: Number,
     default: ''
   }
 })
 const model = ref({
-  name: null,
+  title: null,
   img: null,
   url: null,
-  status: null
+
 })
 const showForm = ref(false)
 const emit = defineEmits(['checkShowModal','shuaxin'])
 onMounted(()=>{
   console.log(123123)
-  if(props.link_id){
-    getLinksInfo(props.link_id).then(res=>{
-      model.value.name = res.name
+  if(props.slide_id){
+    getSlidesInfo(props.slide_id).then(res=>{
+      model.value.title = res.title
       model.value.url = res.url
       model.value.img = res.img
-      model.value.status = res.status
       showForm.value = true
       console.log(res)
     })
@@ -108,21 +107,15 @@ const rules = {
       message: '输入输入跳转链接'
     }
   ],
-  status: [
-    {
-      required: true,
-      message: '请选择状态'
-    }
-  ],
 }
 const formRef = ref()
-const linkSubmit = (e)=>{
+const slideSubmit = (e)=>{
   e.preventDefault()
   formRef.value.validate(errors=>{
     if(errors){
       console.log(errors)
     }else{
-      changeLink(props.link_id,model.value).then(res=>{
+      changeSlide(props.slide_id,model.value).then(res=>{
         window.$message.success('修改成功')
         emit('checkShowModal',false)
         emit('reloadTable')
@@ -136,7 +129,7 @@ const delSubmit = (e)=>{
     if(errors){
       console.log(errors)
     }else{
-      delLink(props.link_id).then(res=>{
+      delSlide(props.slide_id).then(res=>{
         window.$message.success('修改成功')
         emit('checkShowModal',false)
         emit('reloadTable')

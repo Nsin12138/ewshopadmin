@@ -14,7 +14,8 @@
         <div>
           <n-data-table
               :columns="columns"
-              :data="data"
+              :data="data.slice(0,5)"
+              :key="data.id"
               :default-expand-all="true"
               :cascade="false"
           />

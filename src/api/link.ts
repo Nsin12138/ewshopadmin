@@ -51,7 +51,7 @@ export  function delLink(linkid) {
     return request(
         {
             url: `/api/admin/links/${linkid}`,
-            method: 'PUT',
+            method: 'DELETE',
         }
     );
 }

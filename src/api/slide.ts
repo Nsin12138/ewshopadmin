@@ -51,7 +51,7 @@ export  function delSlide(slideid) {
     return request(
         {
             url: `/api/admin/slides/${slideid}`,
-            method: 'PUT',
+            method: 'DELETE',
         }
     );
 }
