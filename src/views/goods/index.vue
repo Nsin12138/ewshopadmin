@@ -178,9 +178,11 @@ const columns = [
 ]
 const pagination = ref(false as const)
 const formSearch = ref({
-  title:''
-
+  title:'',
+  is_on:0 | 1,
+  is_recommend: 0 | 1
 })
+
 // 添加模态框显示状态
 const showModal = ref(false)
 // 编辑模态框
@@ -200,55 +202,55 @@ const updatePage = (pageNum) => {
   getGoodList({
     current:pageNum,
     title:formSearch.value.title,
-
-
+    is_on:formSearch.value.is_on,
+    is_recommend:formSearch.value.is_recommend
   })
 }
-// 已上架按钮功能实现
-const sellSubmit = (e) => {
-  e.preventDefault()
+const repetition = ()=>{
   getGoodList({
-    is_on: 1,
+    title: formSearch.value.title,
+    is_on: formSearch.value.is_on,
+    is_recommend: formSearch.value.is_recommend,
     current:1
   })
+}
+
+// 已上架按钮功能实现
+const sellSubmit = (e) => {
+  formSearch.value.is_on =1
+  e.preventDefault()
+  repetition()
 }
 // 未上架按钮功能实现
 const stockSubmit = (e) => {
+  formSearch.value.is_on =0
   e.preventDefault()
-  getGoodList({
-    is_on: 0,
-    current:1
-  })
+  repetition()
 }
 // 已推荐功能实现
 const recommendSubmit = (e) => {
+  formSearch.value.is_recommend =1
   e.preventDefault()
-  getGoodList({
-    is_recommend: 1,
-    current:1
-  })
+  repetition()
 }
 // 未推荐功能实现
 const noRecommendSubmit = (e) => {
+  formSearch.value.is_recommend =0
   e.preventDefault()
-  getGoodList({
-    is_recommend: 0,
-    current:1
-  })
+  repetition()
 }
 // 搜索功能实现
 const searchSubmit = (e) =>{
   e.preventDefault()
-  getGoodList({
-    title:formSearch.value.title,
-    current:1
-  })
+  repetition()
 }
 // 重置功能实现
 const searchReload = ()=>{
   getGoodList({})
   formSearch.value = {
-    title:''
+    title:'',
+    is_on: 0|1,
+    is_recommend: 0|1,
 
   }
 }

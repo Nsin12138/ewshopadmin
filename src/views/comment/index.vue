@@ -18,22 +18,27 @@
             label-placement="left"
         >
           <n-form-item label="商品名" path="goods_title">
-            <n-input v-model:value="formSearch.name" placeholder="请输入商品名" />
+            <n-input v-model:value="formSearch.title" placeholder="请输入内容" />
           </n-form-item>
-          <n-space vertical>
-            <n-radio-group v-model:value="value" name="radiobuttongroup1">
-              <n-radio-button
-                  v-for="song in songs"
-                  :key="song.value"
-                  :value="song.value"
-                  :disabled="
-          (song.label === 'Live Forever' && disabled1) ||
-            (song.label === 'Shakermaker' && disabled2)
-        "
-                  :label="song.label"
-              />
-            </n-radio-group>
-          </n-space>
+          <n-form-item label="评论级别">
+            <n-button type="info" size="small" class="mr-4" @click="goodSubmit">
+              好 评
+            </n-button>
+            <n-button type="info" size="small" class="mr-4" @click="mediumSubmit">
+              中 评
+            </n-button>
+            <n-button type="info" size="small" class="mr-4" @click="badSubmit">
+              差 评
+            </n-button>
+          </n-form-item>
+          <n-form-item label="回复状态">
+            <n-button type="info" size="small" class="mr-4" @click="alreadySubmit">
+              已 回 复
+            </n-button>
+            <n-button type="info" size="small" class="mr-4" @click="awaitSubmit">
+              待 回 复
+            </n-button>
+          </n-form-item>
 
           <n-form-item class="ml-auto">
             <n-button class="mr-4" attr-type="button" @click="searchReload">
@@ -47,8 +52,7 @@
       </div>
       <div class="mt-4 bg-white">
         <div class="text-xl px-6 py-4 flex ">
-          <span>用户列表</span>
-          <span class="ml-auto"><NButton type="info" @click="showModal = true" >+ 新建</NButton></span>
+          <span>评论列表</span>
         </div>
         <div>
 
@@ -64,8 +68,8 @@
           </div>
         </div>
       </div>
-      <AddComment :showModal="showModal" @checkShowModal="checkShowModal" @reloadTable="reload"></AddComment>
-      <EditComment v-if="showEditModal"  :user_id="user_id" :showModal="showEditModal" @checkShowModal="checkEditModal" @reloadTable="reload"></EditComment>
+      <EditComment v-if="showEditModal"  :comment_id="comment_id" :showModal="showEditModal" @checkShowModal="checkEditModal" @reloadTable="reload"></EditComment>
+      <DeleteComment v-if="showDelModal" :comment_id="comment_id" :showModal="showDelModal" @checkShowModal="checkDelModal" @reloadTable="reload"></DeleteComment>
     </div>
   </div>
 </template>
@@ -73,97 +77,192 @@
 <script lang="ts" setup>
 import { h,ref,onMounted} from 'vue'
 import { NButton, useMessage,NAvatar,NSwitch,useLoadingBar } from 'naive-ui'
-import AddComment from './components/AddComment.vue'
 import EditComment from './components/EditComment.vue'
 import { comments } from '@/api/comment'
+import DeleteComment from './components/DeleteComment.vue'
 const page = ref(1)
 const message = useMessage()
 const data = ref([])
 const totalPages = ref(0)
 const columns = [
+  /*{
+    title: '商品',
+    key: 'goods.title',
+    align:'center'
+  },*/
   {
     title: '内容',
     key: 'content',
+    align:'center'
 
   },
   {
     title: '评级',
-    key: 'rate'
+    key: 'rate',
+    align:'center',
+    render(row){
+      switch (row.rate) {
+        case 1:
+          return h(NButton, {size: 'small', dashed:true, type:"error", strong:true,},'好评');
+        case 2:
+          return h(NButton, {size: 'small', dashed:true, type:"primary", strong:true,},'中评');
+        case 3:
+          return h(NButton, {size: 'small', dashed:true,type:"info", strong:true,},'差评');
+      }
+
+    }
   },
   {
     title: '星级',
-    key: 'star'
+    key: 'star',
+    align:'center'
   },
   {
     title: '回复',
-    key: 'reply'
+    key: 'reply',
+    align:'center'
   },
   {
     title: '评价时间',
-    key: 'created_at'
+    key: 'created_at',
+    align:'center'
   },
   {
     title: '操作',
     key: 'created_at',
+    align:'center',
     render(row){
-      return h(NButton,{
+      return [h(NButton,{
         size:'small',
+        bordered:false,
+        ghost:true,
         color:'#1890ff',
+        right:'10px',
         strong:true,
         onClick:()=>{
-          user_id.value = row.id
+          comment_id.value = row.id
           showEditModal.value = true
         }
-      },'编辑')
+      },'回复'),
+        h(NButton,{
+          type:'error',
+          bordered:false,
+          ghost:true,
+          size:'small',
+          // color:'#1890ff',
+          strong:true,
+          onClick:()=>{
+            comment_id.value = row.id
+            showDelModal.value = true
+          }
+        },'删除')
+
+      ]
     }}
 ]
 const pagination = ref(false as const)
 const formSearch = ref({
-  name:'',
-  email:''
+  title:'',
+  reply:'',
+  rate: 1 | 2 | 3
 })
 // 添加模态框显示状态
 const showModal = ref(false)
 // 编辑模态框
 const showEditModal = ref(false)
+// 删除模态框
+const showDelModal = ref(false)
 
-const user_id = ref('')
+const comment_id = ref('')
 
 const checkEditModal = (show:boolean) => {
   showEditModal.value = show
 }
+const checkDelModal = (show:boolean) => {
+  showDelModal.value = show
+}
+
 const loadingBar = useLoadingBar()
 
 onMounted(()=>{
-  getUserList({})
+  getCommentList({})
 })
 const updatePage = (pageNum) => {
-  getUserList({
+  getCommentList({
     current:pageNum,
-    name:formSearch.value.name,
-    email:formSearch.value.email
+    goods_title:formSearch.value.title,
+    // include:params.include
+    // rate:formSearch.value.rate,
   })
 }
 const searchSubmit = (e) =>{
   e.preventDefault()
-  getUserList({
-    name:formSearch.value.name,
-    email:formSearch.value.email,
-    current:1
-  })
+  repetition ()
 }
 const searchReload = ()=>{
-  getUserList({})
+  getCommentList({})
   formSearch.value = {
     // 重置后，进行搜索框清空
-    name:'',
-    email:''
+    title:'',
+    reply:"",
+    rate: 1 | 2 | 3
   }
 }
-const getUserList = (params) =>{
+/*const params={
+  include:'goods,user' // 订单详情里包含商品信息
+}*/
+const repetition = ()=> {
+  getCommentList({
+    goods_title :formSearch.value.title,
+    rate: formSearch.value.rate,
+    reply:formSearch.value.reply,
+    current: 1,
+    // include: params.include
+  })
+}
+
+// 筛选已下单商品
+const goodSubmit = (e) =>{
+  e.preventDefault()
+  formSearch.value.rate = 1
+  repetition()
+}
+// 筛选已支付商品
+const mediumSubmit = (e) =>{
+  e.preventDefault()
+  formSearch.value.rate = 2
+  repetition()
+}
+// 筛选已发货商品
+const badSubmit = (e) =>{
+  e.preventDefault()
+  formSearch.value.rate = 3
+  repetition()
+}
+
+// 筛选已回复商品
+const alreadySubmit = (e) =>{
+  if(formSearch.value.reply == null){
+    e.preventDefault()
+    repetition()
+  }
+}
+
+// 筛选待回复商品
+const awaitSubmit = (e) =>{
+  if(formSearch.value.reply != null){
+    e.preventDefault()
+    repetition()
+  }
+}
+
+
+const getCommentList = (params) =>{
   loadingBar.start()
   comments(params).then(res =>{
     data.value = res.data
+    console.log(data.value,'1q1111111111111111111');
+    console.log(res,'33333333333333333333333');
     totalPages.value = res.meta.pagination.total_pages
     page.value = res.meta.pagination.current_page
     loadingBar.finish()
@@ -175,14 +274,17 @@ const checkShowModal = (status)=>{
   showModal.value = status
 }
 const reload = ()=>{
-  getUserList({
+  getCommentList({
     current:page.value,
-    name:formSearch.value.name,
-    email:formSearch.value.email
+    goods_title:formSearch.value.title,
+    rate:formSearch.value.rate,
   })
 }
 </script>
 
 <style scoped>
-
+.n-data-table .n-data-table-tr > td:last-child{
+  display: flex;
+  justify-content: space-between;
+}
 </style>

@@ -14,10 +14,10 @@
         <div>
           <n-data-table
               :columns="columns"
-              :data="data.slice(0,5)"
-              :key="data.id"
-              :default-expand-all="true"
+              :data="data"
               :cascade="false"
+              allow-checking-not-loaded
+              @load="onLoad"
           />
           <div class="p-4 flex justify-end pr-10">
             <!--            分页组件  绑定数据                 	当前页发生改变时的回调函数-->
@@ -32,7 +32,7 @@
 
 <script lang="ts" setup>
 import { h,ref,onMounted} from 'vue'
-import { NButton,NInputNumber, useMessage, useLoadingBar } from 'naive-ui'
+import { NButton,NInputNumber, useMessage, useLoadingBar} from 'naive-ui'
 import { category,getCategorySeq} from '@/api/category'
 import AddCategory from "@/views/category/components/AddCategory.vue";
 
@@ -42,40 +42,45 @@ const data = ref([])
 const totalPages = ref(0)
 
 const columns = [
-
   {
     title: '分类名称',
     key: 'name',
-    width:'60%',
+    width:'60%'
   },
-      {
-        title: '分类排序',
-        key: 'seq',
-        render(row) {
-          return h(NInputNumber,{
-            style:'max-width:20%',
-            defaultValue:row.seq,
-            showButton:false,
-            max:42,
-            value:1,
-            updateValueOnInput:false,
-            blur:handleBlur,
-            onBlur:()=>{
-              row.seq = row.value
-              console.log(blur)
-              // handleChange(row)
-              handleBlur(row)
-            }
-          })
+  {
+    title: '分类排序',
+    key: 'seq',
+    render(row) {
+      return h(NInputNumber,{
+        style:'max-width:20%',
+        defaultValue:row.seq,
+        showButton:false,
+        max:42,
+        updateValueOnInput:false,
+        blur:handleBlur,
+        domProps:{
+          value: row.value
+        },
+        on: {
+          input (event){
+            row.value = event.target.value;
+          }
+        },
+        onBlur:()=>{
+          row.seq = row.value
+          console.log(blur)
+          // handleChange(row)
+          handleBlur(row)
         }
-      },
-
-      {
-        title: '操作',
-        key: 'created_at',
-        align:'center',
-        render(row){
-        return h(NButton,{
+      })
+    }
+  },
+  {
+    title: '操作',
+    key: 'created_at',
+    align:'center',
+    render(row){
+      return h(NButton,{
         size:'small',
         color:'#1890ff',
         strong:true,
@@ -86,7 +91,14 @@ const columns = [
       },'修改')
     }}
 ]
-
+const onLoad = (row: Record<string, unknown>)=> {
+  return new Promise<void>((resolve) => {
+    setTimeout(() => {
+      row.children = [{ key: row.key + '-1', example: row.key + '-1' }]
+      resolve()
+    }, 1000)
+  })
+}
 // 添加模态框显示状态
 const showModal = ref(false)
 // 编辑模态框
@@ -113,16 +125,9 @@ const  getCategoryList = async (params) =>{
     console.log(data.value);
 }
 
-/*const handleChange = (row) => {
-  getCategorySeq(row.id,seq).then(()=>{
-    row.seq = row.value
-    //可以在此处设置验证是否进行状态的修改
-    message.info('排序状态已修改')
-  })
-}*/
+
 const handleBlur = (row) => {
   // const seq = row.value
-
   getCategorySeq(row.id,row.seq).then(()=>{
 
     //可以在此处设置验证是否进行状态的修改

@@ -14,7 +14,7 @@
       </n-layout-content>
       <n-layout-footer>
         <div class="text-center">
-          <span>Copyright © 2020</span>
+          <span>Copyright © 2022</span>
         </div>
       </n-layout-footer>
     </n-layout>

@@ -17,11 +17,7 @@
       </template>
       <n-form v-if="showForm"  ref="formRef" :model="model" >
         <n-form-item label="回复内容">
-          <n-input
-              v-model:value="model.reply"
-              type="textarea"
-              placeholder="请输入"
-          />
+          <h3>你确定要删除这条评论吗</h3>
         </n-form-item>
         <n-row :gutter="[0, 24]">
           <n-col :span="24">
@@ -31,8 +27,9 @@
                   type="primary"
                   @click="commentSubmit"
               >
-                提交
+                确定
               </n-button>
+              <n-button type="error"  @click="$emit('checkShowModal',false)">取消</n-button>
             </div>
           </n-col>
         </n-row>

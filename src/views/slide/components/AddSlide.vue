@@ -85,12 +85,7 @@ const rules = {
       message: '请输入标题'
     }
   ],
-  img: [
-    {
-      required: true,
-      message: '请上传图片'
-    }
-  ],
+
   url: [
     {
       required: true,

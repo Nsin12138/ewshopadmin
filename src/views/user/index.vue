@@ -180,9 +180,7 @@ const searchReload = ()=>{
 const getUserList = (params) =>{
   loadingBar.start()
   users(params).then(users =>{
-    console.log(users.data)
     data.value = users.data
-    console.log(data.value);
     totalPages.value = users.meta.pagination.total_pages
     page.value = users.meta.pagination.current_page
     loadingBar.finish()

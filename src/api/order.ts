@@ -17,22 +17,24 @@ export function orders(params){
 }
 
 // 订单详情
-export  function getOrderInfo(orderid) {
+export  function getOrderInfo(orderid,params) {
     return request(
         {
             url: `/api/admin/orders/${orderid}`,
             method: 'GET',
+            params
 
         }
     );
 }
 
 // 订单发货
-export  function Orderpost(orderid) {
+export function OrderPost (orderid,params) {
     return request(
         {
             url: `/api/admin/orders/${orderid}/post`,
             method: 'PATCH',
+            params
         }
     );
 }
