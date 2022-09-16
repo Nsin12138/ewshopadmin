@@ -15,9 +15,7 @@
           <n-data-table
               :columns="columns"
               :data="data"
-              :cascade="false"
-              allow-checking-not-loaded
-              @load="onLoad"
+              default-expand-all
           />
           <div class="p-4 flex justify-end pr-10">
             <!--            分页组件  绑定数据                 	当前页发生改变时的回调函数-->
@@ -25,16 +23,17 @@
           </div>
         </div>
       </div>
-      <AddCategory :showModal="showModal" @checkShowModal="checkShowModal" @reloadTable="reload"></AddCategory>
+      <AddCategory :showModal="showModal" :data123="data" @checkShowModal="checkShowModal" @reloadTable="reload"></AddCategory>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { h,ref,onMounted} from 'vue'
+import {h, ref, onMounted, reactive} from 'vue'
 import { NButton,NInputNumber, useMessage, useLoadingBar} from 'naive-ui'
 import { category,getCategorySeq} from '@/api/category'
 import AddCategory from "@/views/category/components/AddCategory.vue";
+import type { DataTableColumns } from 'naive-ui'
 
 const page = ref(1)
 const message = useMessage()
@@ -45,14 +44,16 @@ const columns = [
   {
     title: '分类名称',
     key: 'name',
-    width:'60%'
+    width:'60%',
   },
   {
     title: '分类排序',
     key: 'seq',
+    width:'10%',
+    sorter: (row1, row2) => row1.seq - row2.seq,
     render(row) {
       return h(NInputNumber,{
-        style:'max-width:20%',
+        style:'max-width:100%',
         defaultValue:row.seq,
         showButton:false,
         max:42,
@@ -117,7 +118,7 @@ const updatePage = (pageNum) => {
 }
 
 // }
-const  getCategoryList = async (params) =>{
+const  getCategoryList = async  (params) =>{
   loadingBar.start()
   const res = await category(params)
     console.log(category,'cartegory')
@@ -142,15 +143,12 @@ const checkShowModal = (status)=>{
 const reload = ()=>{
   getCategoryList({
     current:page.value,
-    // name:formSearch.value.name,
-    // email:formSearch.value.email
+
   })
 }
 
 </script>
 
 <style scoped>
-.n-data-table-tr>th:first-child{
-  width: 70%;
-}
+
 </style>

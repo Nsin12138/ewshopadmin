@@ -15,21 +15,22 @@
       <template #header-extra>
         <n-button type="error"  @click="$emit('checkShowModal',false)">X</n-button>
       </template>
-      <n-form v-if="showForm"  ref="formRef" :model="model" >
-        <n-form-item label="回复内容">
-          <h3>你确定要删除这条评论吗</h3>
+      <n-form v-if="showForm"  ref="formRef"  >
+        <n-form-item style="justify-content: center">
+          <div style="font-size: 24px">你确定要删除这条评论吗</div>
         </n-form-item>
         <n-row :gutter="[0, 24]">
           <n-col :span="24">
-            <div style="display: flex; justify-content: flex-end">
+            <div style="display: flex; justify-content: space-around ; margin-top: 20px">
               <n-button
                   round
+                  style="float: left"
                   type="primary"
                   @click="commentSubmit"
               >
                 确定
               </n-button>
-              <n-button type="error"  @click="$emit('checkShowModal',false)">取消</n-button>
+              <n-button type="error" round  @click="$emit('checkShowModal',false)">取消</n-button>
             </div>
           </n-col>
         </n-row>
@@ -40,8 +41,8 @@
 </template>
 
 <script setup>
-import { h, ref,defineProps,defineEmits,onMounted } from 'vue'
-import {getCommentInfo, getCommentReply} from "@/api/comment";
+import {h, ref, defineProps,defineEmits, onMounted} from 'vue'
+import { delComment} from "@/api/comment";
 const props =  defineProps({
   showModal: {
     type: Boolean,
@@ -52,25 +53,13 @@ const props =  defineProps({
     default: ''
   }
 })
-const model = ref({
-  reply: '',
-})
 
-const params={
-  include:'goods,user' // 订单详情里包含商品信息
-}
 const showForm = ref(false)
-const emit = defineEmits(['checkShowModal','shuaxin'])
+const emit = defineEmits(['checkShowModal'])
 onMounted(()=>{
-  console.log(123123)
-  if(props.comment_id){
-    getCommentInfo(props.comment_id,params).then(res=>{
-      model.value.reply = res.reply
-      showForm.value = true
-    })
-  }
+  if(props.comment_id)
+  showForm.value = true
 })
-
 const formRef = ref()
 const commentSubmit = (e)=>{
   e.preventDefault()
@@ -78,7 +67,7 @@ const commentSubmit = (e)=>{
     if(errors){
       console.log(errors)
     }else{
-      getCommentReply(props.comment_id,model.value,params).then(res=>{
+      delComment(props.comment_id).then(res=>{
         window.$message.success('修改成功')
         emit('checkShowModal',false)
         emit('reloadTable')

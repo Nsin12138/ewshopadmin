@@ -60,6 +60,7 @@
           <n-data-table
               v-model:columns="columns"
               :data="data"
+              :bordered="true"
               :pagination="pagination"
               default-expand-all
           />
@@ -227,7 +228,13 @@ const staleSubmit = (e) =>{
 // 搜索功能
 const searchSubmit = (e) =>{
   e.preventDefault()
-  repetition()
+  getOrderList({
+    order_no: formSearch.value.order_no,
+    // trade_no: formSearch.value.trade_no,
+    // status: formSearch.value.status,
+    current: 1,
+    include: params.include
+  })
 }
 const searchReload = ()=>{
   getOrderList(params)

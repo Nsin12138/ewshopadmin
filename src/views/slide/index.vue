@@ -90,6 +90,7 @@ const columns = [
     title: '排序',
     key: 'seq',
     align:'center',
+    sorter: (row1, row2) => row1.seq - row2.seq,
   },
   {
     title: '更新时间',

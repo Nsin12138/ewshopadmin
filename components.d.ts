@@ -7,10 +7,13 @@ export {}
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
+    Category: typeof import('./src/components/category/index.vue')['default']
     Editor: typeof import('./src/components/Editor/index.vue')['default']
     NAvatar: typeof import('naive-ui')['NAvatar']
     NButton: typeof import('naive-ui')['NButton']
     NCard: typeof import('naive-ui')['NCard']
+    NCascader: typeof import('naive-ui')['NCascader']
+    NCascaderd: typeof import('naive-ui')['NCascaderd']
     NCheckbox: typeof import('naive-ui')['NCheckbox']
     NCol: typeof import('naive-ui')['NCol']
     NDataTable: typeof import('naive-ui')['NDataTable']

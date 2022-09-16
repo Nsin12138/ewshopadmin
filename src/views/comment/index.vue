@@ -85,11 +85,11 @@ const message = useMessage()
 const data = ref([])
 const totalPages = ref(0)
 const columns = [
-  /*{
+  {
     title: '商品',
     key: 'goods.title',
     align:'center'
-  },*/
+  },
   {
     title: '内容',
     key: 'content',
@@ -185,22 +185,30 @@ const checkDelModal = (show:boolean) => {
 const loadingBar = useLoadingBar()
 
 onMounted(()=>{
-  getCommentList({})
+  getCommentList(params)
 })
 const updatePage = (pageNum) => {
   getCommentList({
     current:pageNum,
     goods_title:formSearch.value.title,
-    // include:params.include
+    include:params.include
     // rate:formSearch.value.rate,
   })
 }
 const searchSubmit = (e) =>{
   e.preventDefault()
-  repetition ()
+  console.log(formSearch.value.title);
+  getCommentList({
+    current:1,
+
+    goods_title:formSearch.value.title,
+    include:params.include
+  })
+  console.log()
+  // repetition ()
 }
 const searchReload = ()=>{
-  getCommentList({})
+  getCommentList(params)
   formSearch.value = {
     // 重置后，进行搜索框清空
     title:'',
@@ -208,9 +216,9 @@ const searchReload = ()=>{
     rate: 1 | 2 | 3
   }
 }
-/*const params={
+const params={
   include:'goods,user' // 订单详情里包含商品信息
-}*/
+}
 const repetition = ()=> {
   getCommentList({
     goods_title :formSearch.value.title,
@@ -274,11 +282,8 @@ const checkShowModal = (status)=>{
   showModal.value = status
 }
 const reload = ()=>{
-  getCommentList({
-    current:page.value,
-    goods_title:formSearch.value.title,
-    rate:formSearch.value.rate,
-  })
+  console.log(12312312312312)
+  getCommentList(params)
 }
 </script>
 

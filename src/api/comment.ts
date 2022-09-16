@@ -38,7 +38,12 @@ export  function getCommentReply(commentid,params) {
     );
 }
 
-
-
-
-
+// 删除评价
+export  function delComment(commentid) {
+    return request(
+        {
+            url: `/api/admin/comments/${commentid}/delete`,
+            method: 'DELETE'
+        }
+    );
+}

@@ -34,6 +34,7 @@ const router = createRouter({
     routes:baseRoutes, // `routes: routes` 的缩写
 })
 router.beforeEach((to,from,next) =>{
+    console.log(from)
     document.title = (to?.meta?.title as string) || document.title;
     if(to.name != 'Login'){
         // 判断是否登录

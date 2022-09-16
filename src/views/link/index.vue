@@ -67,7 +67,9 @@ const columns = [
   },
   {
     title: '排序',
-    key:'seq'
+    key:'seq',
+    align:'center',
+    sorter: (row1, row2) => row1.seq - row2.seq,
   },
   {
     title: '是否禁用',
