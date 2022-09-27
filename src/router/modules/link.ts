@@ -1,8 +1,8 @@
-import { RouteRecordRaw} from 'vue-router'
-import Layout from '@/layout/index.vue'
-import {Link} from '@vicons/ionicons5'
-import {renderIcon} from '@/utils'
-const routeName = 'link'
+import { RouteRecordRaw} from "vue-router";
+import Layout from "@/layout/index.vue";
+import {Link} from "@vicons/ionicons5";
+import {renderIcon} from "@/utils";
+const routeName = "link";
 /**
  * @param name 路由名称, 必须设置,且不能重名
  * @param meta 路由元信息（路由附带扩展信息）
@@ -14,26 +14,26 @@ const routeName = 'link'
  *
  * */
 const routes: Array<RouteRecordRaw> = [
-    {
-        path: '/link',
-        name: routeName,
-        component: Layout,
-        redirect: '/link/list',
-        meta: {
-            title: '友情链接',
-            icon: renderIcon(Link),
-            sort:7
-        },
-        children: [
-            {
-                path: 'list',
-                name: `${routeName}_list`,
-                meta: {
-                    title: '友链列表',
-                    icon: renderIcon(Link),
-                },
-                component: () => import('@/views/link/index.vue'),
-            }]
-    }
+	{
+		path: "/link",
+		name: routeName,
+		component: Layout,
+		redirect: "/link/list",
+		meta: {
+			title: "友情链接",
+			icon: renderIcon(Link),
+			sort:7
+		},
+		children: [
+			{
+				path: "list",
+				name: `${routeName}_list`,
+				meta: {
+					title: "友链列表",
+					icon: renderIcon(Link),
+				},
+				component: () => import("@/views/link/index.vue"),
+			}]
+	}
 ];
 export default routes;

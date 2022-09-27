@@ -24,19 +24,19 @@
             <n-input v-model:value="formSearch.trade_no" placeholder="请输入" />
           </n-form-item>
           <n-form-item label="订单状态">
-            <n-button type="info" size="small" class="mr-4" @click="orderedSubmit">
+            <n-button type="info" size="small" class="mr-4" @click="orderedSubmit(1)">
               已下单
             </n-button>
-            <n-button type="info" size="small" class="mr-4" @click="paidSubmit">
+            <n-button type="info" size="small" class="mr-4" @click="orderedSubmit(2)">
               已支付
             </n-button>
-            <n-button type="info" size="small" class="mr-4" @click="shippedSubmit">
+            <n-button type="info" size="small" class="mr-4" @click="orderedSubmit(3)">
               已发货
             </n-button>
-            <n-button type="info" size="small" class="mr-4" @click="receivedSubmit">
+            <n-button type="info" size="small" class="mr-4" @click="orderedSubmit(4)">
               已收货
             </n-button>
-            <n-button type="info" size="small"  @click="staleSubmit">
+            <n-button type="info" size="small"  @click="orderedSubmit(5)">
               已过期
             </n-button>
           </n-form-item>
@@ -63,6 +63,7 @@
               :bordered="true"
               :pagination="pagination"
               default-expand-all
+              :loading = "loading"
           />
           <div class="p-4 flex justify-end pr-10">
             <n-pagination v-model:page="page" @update:page="updatePage" :page-count="totalPages" />
@@ -75,201 +76,176 @@
 </template>
 
 <script lang="ts" setup>
-import { h,ref,onMounted } from 'vue'
-import { NButton, useMessage,useLoadingBar } from 'naive-ui'
-import EditOrder from './components/EditOrder.vue'
-import { orders } from '@/api/order'
-const page = ref(1)
-const message = useMessage()
-const data = ref([])
-const totalPages = ref(0)
+import { h,ref,onMounted } from "vue";
+import { NButton, useMessage,useLoadingBar } from "naive-ui";
+import EditOrder from "./components/EditOrder.vue";
+import { orders } from "@/api/order";
+const page = ref(1);
+const message = useMessage();
+const loading = ref(true);
+const data = ref([]);
+const totalPages = ref(0);
 const columns = [
-  {
-    title: '单号',
-    key: 'order_no',
-    align:'center',
-  },
-  {
-    title: '用户',
-    key: 'user.name',
-    align:'center',
-  },
-  {
-    title: '金额',
-    key: 'amount',
-    align:'center',
-  },
-  {
-    title: '状态',
-    key: 'status',
-    align:'center',
-    render(row){
-      switch (row.status) {
-        case 1:
-         return h(NButton, {size: 'small', dashed:true, type:"error", strong:true,},'下单');
-        case 2:
-          return h(NButton, {size: 'small', dashed:true, type:"primary", strong:true,},'支付');
-        case 3:
-          return h(NButton, {size: 'small', dashed:true,type:"info", strong:true,},'发货');
-        case 4:
-          return h(NButton, {size: 'small', dashed:true, type:"success", strong:true,},'收货');
-        case 5:
-          return h(NButton, {size: 'small', dashed:true, type:"warning", strong:true,},'过期');
-      }
+	{
+		title: "单号",
+		key: "order_no",
+		align:"center",
+	},
+	{
+		title: "用户",
+		key: "user.name",
+		align:"center",
+	},
+	{
+		title: "金额",
+		key: "amount",
+		align:"center",
+	},
+	{
+		title: "状态",
+		key: "status",
+		align:"center",
+		render(row){
+			switch (row.status) {
+			case 1:
+				return h(NButton, {size: "small", dashed:true, type:"error", strong:true,},"下单");
+			case 2:
+				return h(NButton, {size: "small", dashed:true, type:"primary", strong:true,},"支付");
+			case 3:
+				return h(NButton, {size: "small", dashed:true,type:"info", strong:true,},"发货");
+			case 4:
+				return h(NButton, {size: "small", dashed:true, type:"success", strong:true,},"收货");
+			case 5:
+				return h(NButton, {size: "small", dashed:true, type:"warning", strong:true,},"过期");
+			}
 
-    }
-  },
-  {
-    title: '添加时间',
-    key: 'created_at',
-    align:'center',
-  },
-  {
-    title: '修改时间',
-    key: 'updated_at',
-    align:'center',
-  },
-  {
-    title: '操作',
-    key: 'created_at',
-    align:'center',
-    render(row){
-      if (row.status ==2){
-        return h(NButton,{
-          size:'small',
-          color:'#1890ff',
-          strong:true,
-          onClick:()=>{
-            order_id.value = row.id
-            showEditModal.value = true
-          }
-        },'发货')
-      }
+		}
+	},
+	{
+		title: "添加时间",
+		key: "created_at",
+		align:"center",
+	},
+	{
+		title: "修改时间",
+		key: "updated_at",
+		align:"center",
+	},
+	{
+		title: "操作",
+		key: "created_at",
+		align:"center",
+		render(row){
+			if (row.status ==2){
+				return h(NButton,{
+					size:"small",
+					color:"#1890ff",
+					strong:true,
+					onClick:()=>{
+						order_id.value = row.id;
+						showEditModal.value = true;
+					}
+				},"发货");
+			}
 
 
-    }}
-]
-const pagination = ref(false as const)
+		}}
+];
+const pagination = ref(false as const);
 const formSearch = ref({
-  order_no:'',
-  trade_no:'',
-  status: 1|2|3|4|5
-})
+	order_no:"",
+	trade_no:"",
+	status: 1|2|3|4|5
+});
 // 添加模态框显示状态
-const showModal = ref(false)
+const showModal = ref(false);
 // 编辑模态框
-const showEditModal = ref(false)
+const showEditModal = ref(false);
 
-const order_id = ref('')
+const order_id = ref("");
 
 // const checkEditModal = (show:boolean) => {
 //   showEditModal.value = show
 // }
-const loadingBar = useLoadingBar()
+const loadingBar = useLoadingBar();
 
 const params={
-  include:'goods,user,orderDetails' // 订单详情里包含商品信息
-}
+	include:"goods,user,orderDetails" // 订单详情里包含商品信息
+};
 onMounted(()=>{
-  getOrderList(params)
-})
+	getOrderList(params);
+});
 
 // 刷新页面
 const updatePage = (pageNum) => {
-  getOrderList({
-    current:pageNum,
-    order_no:formSearch.value.order_no,
-    trade_no:formSearch.value.trade_no,
-    // status:formSearch.value.status,
-    include:params.include
-  })
-}
+	getOrderList({
+		current:pageNum,
+		order_no:formSearch.value.order_no,
+		trade_no:formSearch.value.trade_no,
+		include:params.include
+	});
+};
 
 const repetition = ()=> {
-  getOrderList({
-    order_no: formSearch.value.order_no,
-    trade_no: formSearch.value.trade_no,
-    status: formSearch.value.status,
-    current: 1,
-    include: params.include
-  })
-}
+	getOrderList({
+		order_no: formSearch.value.order_no,
+		trade_no: formSearch.value.trade_no,
+		status: formSearch.value.status,
+		current: 1,
+		include: params.include
+	});
+};
 
 // 筛选已下单商品
-const orderedSubmit = (e) =>{
-  e.preventDefault()
-  formSearch.value.status = 1
-  repetition()
-}
-// 筛选已支付商品
-const paidSubmit = (e) =>{
-  e.preventDefault()
-  formSearch.value.status = 2
-  repetition()
-}
-// 筛选已发货商品
-const shippedSubmit = (e) =>{
-  e.preventDefault()
-  formSearch.value.status = 3
-  repetition()
-}
-// 筛选已收货商品
-const receivedSubmit = (e) =>{
-  e.preventDefault()
-  formSearch.value.status = 4
-  repetition()
-}
-// 筛选已过期商品
-const staleSubmit = (e) =>{
-  e.preventDefault()
-  formSearch.value.status = 5
-  repetition()
-}
+const orderedSubmit = (orders) =>{
+	formSearch.value.status = orders;
+	repetition();
+};
+
 // 搜索功能
 const searchSubmit = (e) =>{
-  e.preventDefault()
-  getOrderList({
-    order_no: formSearch.value.order_no,
-    // trade_no: formSearch.value.trade_no,
-    // status: formSearch.value.status,
-    current: 1,
-    include: params.include
-  })
-}
+	e.preventDefault();
+	getOrderList({
+		order_no: formSearch.value.order_no,
+		current: 1,
+		include: params.include
+	});
+};
 const searchReload = ()=>{
-  getOrderList(params)
-  formSearch.value = {
-    order_no:'',
-    trade_no:'',
-    status: 1|2|3|4|5
-  }
-}
+	getOrderList(params);
+	formSearch.value = {
+		order_no:"",
+		trade_no:"",
+		status: 1|2|3|4|5
+	};
+};
 const getOrderList = (params) =>{
-  loadingBar.start()
-  orders(params).then(res =>{
-    data.value = res.data
-    console.log(res.data);
-    totalPages.value = res.meta.pagination.total_pages
-    page.value = res.meta.pagination.current_page
-    loadingBar.finish()
-  }).catch(err=>{
-    loadingBar.error()
-  })
-}
+	loadingBar.start();
+	orders(params).then(res =>{
+		data.value = res.data;
+		console.log(res.data);
+		totalPages.value = res.meta.pagination.total_pages;
+		page.value = res.meta.pagination.current_page;
+		loadingBar.finish();
+		loading.value = false;
+	}).catch(err=>{
+		loadingBar.error();
+	});
+};
 const checkShowModal = (status)=>{
-  showModal.value = status
-}
+	showModal.value = status;
+};
 const checkEditModal = (show:boolean) => {
-  showEditModal.value = show
-}
+	showEditModal.value = show;
+};
 const reload = ()=>{
-  getOrderList({
-    current:page.value,
-    order_no:formSearch.value.order_no,
-    trade_no:formSearch.value.trade_no,
-    include:params.include
-  })
-}
+	getOrderList({
+		current:page.value,
+		order_no:formSearch.value.order_no,
+		trade_no:formSearch.value.trade_no,
+		include:params.include
+	});
+};
 </script>
 
 <style scoped>

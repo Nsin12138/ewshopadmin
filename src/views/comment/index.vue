@@ -21,25 +21,16 @@
             <n-input v-model:value="formSearch.title" placeholder="请输入内容" />
           </n-form-item>
           <n-form-item label="评论级别">
-            <n-button type="info" size="small" class="mr-4" @click="goodSubmit">
+            <n-button type="info" size="small" class="mr-4" @click="goodSubmit(1)">
               好 评
             </n-button>
-            <n-button type="info" size="small" class="mr-4" @click="mediumSubmit">
+            <n-button type="info" size="small" class="mr-4" @click="goodSubmit(2)">
               中 评
             </n-button>
-            <n-button type="info" size="small" class="mr-4" @click="badSubmit">
+            <n-button type="info" size="small" class="mr-4" @click="goodSubmit(3)">
               差 评
             </n-button>
           </n-form-item>
-          <n-form-item label="回复状态">
-            <n-button type="info" size="small" class="mr-4" @click="alreadySubmit">
-              已 回 复
-            </n-button>
-            <n-button type="info" size="small" class="mr-4" @click="awaitSubmit">
-              待 回 复
-            </n-button>
-          </n-form-item>
-
           <n-form-item class="ml-auto">
             <n-button class="mr-4" attr-type="button" @click="searchReload">
               重置
@@ -61,6 +52,7 @@
               :data="data"
               :pagination="pagination"
               :bordered="false"
+              :loading="loading"
           />
           <div class="p-4 flex justify-end pr-10">
             <!--            分页组件  绑定数据                 	当前页发生改变时的回调函数-->
@@ -75,216 +67,190 @@
 </template>
 
 <script lang="ts" setup>
-import { h,ref,onMounted} from 'vue'
-import { NButton, useMessage,NAvatar,NSwitch,useLoadingBar } from 'naive-ui'
-import EditComment from './components/EditComment.vue'
-import { comments } from '@/api/comment'
-import DeleteComment from './components/DeleteComment.vue'
-const page = ref(1)
-const message = useMessage()
-const data = ref([])
-const totalPages = ref(0)
+import { h,ref,onMounted} from "vue";
+import { NButton, useMessage,NAvatar,NSwitch,useLoadingBar } from "naive-ui";
+import EditComment from "./components/EditComment.vue";
+import { comments } from "@/api/comment";
+import DeleteComment from "./components/DeleteComment.vue";
+
+const loading = ref(true);
+const page = ref(1);
+const message = useMessage();
+const data = ref([]);
+const totalPages = ref(0);
 const columns = [
-  {
-    title: '商品',
-    key: 'goods.title',
-    align:'center'
-  },
-  {
-    title: '内容',
-    key: 'content',
-    align:'center'
+	{
+		title: "商品",
+		key: "goods.title",
+		align:"center"
+	},
+	{
+		title: "内容",
+		key: "content",
+		align:"center"
 
-  },
-  {
-    title: '评级',
-    key: 'rate',
-    align:'center',
-    render(row){
-      switch (row.rate) {
-        case 1:
-          return h(NButton, {size: 'small', dashed:true, type:"error", strong:true,},'好评');
-        case 2:
-          return h(NButton, {size: 'small', dashed:true, type:"primary", strong:true,},'中评');
-        case 3:
-          return h(NButton, {size: 'small', dashed:true,type:"info", strong:true,},'差评');
-      }
+	},
+	{
+		title: "评级",
+		key: "rate",
+		align:"center",
+		render(row){
+			switch (row.rate) {
+			case 1:
+				return h(NButton, {size: "small", dashed:true, type:"error", strong:true,},"好评");
+			case 2:
+				return h(NButton, {size: "small", dashed:true, type:"primary", strong:true,},"中评");
+			case 3:
+				return h(NButton, {size: "small", dashed:true,type:"info", strong:true,},"差评");
+			}
 
-    }
-  },
-  {
-    title: '星级',
-    key: 'star',
-    align:'center'
-  },
-  {
-    title: '回复',
-    key: 'reply',
-    align:'center'
-  },
-  {
-    title: '评价时间',
-    key: 'created_at',
-    align:'center'
-  },
-  {
-    title: '操作',
-    key: 'created_at',
-    align:'center',
-    render(row){
-      return [h(NButton,{
-        size:'small',
-        bordered:false,
-        ghost:true,
-        color:'#1890ff',
-        right:'10px',
-        strong:true,
-        onClick:()=>{
-          comment_id.value = row.id
-          showEditModal.value = true
-        }
-      },'回复'),
-        h(NButton,{
-          type:'error',
-          bordered:false,
-          ghost:true,
-          size:'small',
-          // color:'#1890ff',
-          strong:true,
-          onClick:()=>{
-            comment_id.value = row.id
-            showDelModal.value = true
-          }
-        },'删除')
+		}
+	},
+	{
+		title: "星级",
+		key: "star",
+		align:"center"
+	},
+	{
+		title: "回复",
+		key: "reply",
+		align:"center"
+	},
+	{
+		title: "评价时间",
+		key: "created_at",
+		align:"center"
+	},
+	{
+		title: "操作",
+		key: "created_at",
+		align:"center",
+		render(row){
+			return [h(NButton,{
+				size:"small",
+				bordered:false,
+				ghost:true,
+				color:"#1890ff",
+				right:"10px",
+				strong:true,
+				onClick:()=>{
+					comment_id.value = row.id;
+					showEditModal.value = true;
+				}
+			},"回复"),
+			h(NButton,{
+				type:"error",
+				bordered:false,
+				ghost:true,
+				size:"small",
+				strong:true,
+				onClick:()=>{
+					comment_id.value = row.id;
+					showDelModal.value = true;
+				}
+			},"删除")
 
-      ]
-    }}
-]
-const pagination = ref(false as const)
+			];
+		}}
+];
+const pagination = ref(false as const);
 const formSearch = ref({
-  title:'',
-  reply:'',
-  rate: 1 | 2 | 3
-})
+	title:"",
+	reply:"",
+	rate: 1 | 2 | 3
+});
 // 添加模态框显示状态
-const showModal = ref(false)
+const showModal = ref(false);
 // 编辑模态框
-const showEditModal = ref(false)
+const showEditModal = ref(false);
 // 删除模态框
-const showDelModal = ref(false)
+const showDelModal = ref(false);
 
-const comment_id = ref('')
+const comment_id = ref("");
 
 const checkEditModal = (show:boolean) => {
-  showEditModal.value = show
-}
+	showEditModal.value = show;
+};
 const checkDelModal = (show:boolean) => {
-  showDelModal.value = show
-}
+	showDelModal.value = show;
+};
 
-const loadingBar = useLoadingBar()
+const loadingBar = useLoadingBar();
 
 onMounted(()=>{
-  getCommentList(params)
-})
+	getCommentList(params);
+});
 const updatePage = (pageNum) => {
-  getCommentList({
-    current:pageNum,
-    goods_title:formSearch.value.title,
-    include:params.include
-    // rate:formSearch.value.rate,
-  })
-}
+	getCommentList({
+		current:pageNum,
+		goods_title:formSearch.value.title,
+		include:params.include
+		// rate:formSearch.value.rate,
+	});
+};
 const searchSubmit = (e) =>{
-  e.preventDefault()
-  console.log(formSearch.value.title);
-  getCommentList({
-    current:1,
-
-    goods_title:formSearch.value.title,
-    include:params.include
-  })
-  console.log()
-  // repetition ()
-}
+	e.preventDefault();
+	console.log(formSearch.value.title);
+	getCommentList({
+		current:1,
+		goods_title:formSearch.value.title,
+		include:params.include
+	});
+	console.log();
+	// repetition ()
+};
 const searchReload = ()=>{
-  getCommentList(params)
-  formSearch.value = {
-    // 重置后，进行搜索框清空
-    title:'',
-    reply:"",
-    rate: 1 | 2 | 3
-  }
-}
+	getCommentList(params);
+	formSearch.value = {
+		// 重置后，进行搜索框清空
+		title:"",
+		reply:"",
+		rate: 1 | 2 | 3
+	};
+};
 const params={
-  include:'goods,user' // 订单详情里包含商品信息
-}
+	include:"goods,user" // 订单详情里包含商品信息
+};
 const repetition = ()=> {
-  getCommentList({
-    goods_title :formSearch.value.title,
-    rate: formSearch.value.rate,
-    reply:formSearch.value.reply,
-    current: 1,
-    // include: params.include
-  })
-}
+	getCommentList({
+		goods_title :formSearch.value.title,
+		rate: formSearch.value.rate,
+		reply:formSearch.value.reply,
+		current: 1,
+		include: params.include
+	});
+};
 
 // 筛选已下单商品
-const goodSubmit = (e) =>{
-  e.preventDefault()
-  formSearch.value.rate = 1
-  repetition()
-}
-// 筛选已支付商品
-const mediumSubmit = (e) =>{
-  e.preventDefault()
-  formSearch.value.rate = 2
-  repetition()
-}
-// 筛选已发货商品
-const badSubmit = (e) =>{
-  e.preventDefault()
-  formSearch.value.rate = 3
-  repetition()
-}
-
-// 筛选已回复商品
-const alreadySubmit = (e) =>{
-  if(formSearch.value.reply == null){
-    e.preventDefault()
-    repetition()
-  }
-}
-
-// 筛选待回复商品
-const awaitSubmit = (e) =>{
-  if(formSearch.value.reply != null){
-    e.preventDefault()
-    repetition()
-  }
-}
-
+const goodSubmit = (rates) =>{
+	formSearch.value.rate = rates;
+	repetition();
+};
 
 const getCommentList = (params) =>{
-  loadingBar.start()
-  comments(params).then(res =>{
-    data.value = res.data
-    console.log(data.value,'1q1111111111111111111');
-    console.log(res,'33333333333333333333333');
-    totalPages.value = res.meta.pagination.total_pages
-    page.value = res.meta.pagination.current_page
-    loadingBar.finish()
-  }).catch(err=>{
-    loadingBar.error()
-  })
-}
+	loadingBar.start();
+	comments(params).then(res =>{
+		data.value = res.data;
+		console.log(data.value,"1q1111111111111111111");
+		console.log(res,"33333333333333333333333");
+		totalPages.value = res.meta.pagination.total_pages;
+		page.value = res.meta.pagination.current_page;
+		loadingBar.finish();
+		loading.value = false;
+	}).catch(err=>{
+		loadingBar.error();
+	});
+};
 const checkShowModal = (status)=>{
-  showModal.value = status
-}
+	showModal.value = status;
+};
 const reload = ()=>{
-  console.log(12312312312312)
-  getCommentList(params)
-}
+	getCommentList({
+		current:page.value,
+		goods_title:formSearch.value.title,
+		include:params.include,
+	});
+};
 </script>
 
 <style scoped>

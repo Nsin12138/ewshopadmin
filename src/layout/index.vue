@@ -22,10 +22,10 @@
 </template>
 
 <script setup>
-import PageHeader from './components/PageHeader.vue'
-import PageSider from './components/PageSider.vue'
-import { useMessage } from 'naive-ui'
-window.$message = useMessage()
+import PageHeader from "./components/PageHeader.vue";
+import PageSider from "./components/PageSider.vue";
+import { useMessage } from "naive-ui";
+window.$message = useMessage();
 </script>
 
 <style scoped>

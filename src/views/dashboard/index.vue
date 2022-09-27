@@ -137,30 +137,30 @@
 import {onMounted, ref} from "vue";
 import {stats} from "@/api/stat";
 
-const goods_info = ref({})
-const users_info = ref({})
+const goods_info = ref({});
+const users_info = ref({});
 const order_info = ref({
-  today:{},
-  yesterday:{},
-  total:{},
-})
+	today:{},
+	yesterday:{},
+	total:{},
+});
 onMounted(()=>{
-  getNum({})
-})
+	getNum({});
+});
 const getNum = (params) =>{
-  stats(params).then(res => {
-    goods_info.value = res.goods_info
-    users_info.value = res.users_info
-    order_info.value = res.order_info
-  })
-}
+	stats(params).then(res => {
+		goods_info.value = res.goods_info;
+		users_info.value = res.users_info;
+		order_info.value = res.order_info;
+	});
+};
 
 const Systems = [
-    {id:1,title:'软件版本',value:'EWShop1.0教学版',url:"https://www.eduwork.cn/"},
-    {id:2,title:'开发团队',value:'学习猿地',url:"https://www.lmonkey.com/"},
-    {id:3,title:'邮箱',value:'ewshop@eduwork.cn',url: '#'},
-    {id:4,title:'微信',value:'gaoluofeng',url:'#'},
-  ]
+	{id:1,title:"软件版本",value:"EWShop1.0教学版",url:"https://www.eduwork.cn/"},
+	{id:2,title:"开发团队",value:"学习猿地",url:"https://www.lmonkey.com/"},
+	{id:3,title:"邮箱",value:"ewshop@eduwork.cn",url: "#"},
+	{id:4,title:"微信",value:"gaoluofeng",url:"#"},
+];
 
 </script>
 

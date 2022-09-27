@@ -4,13 +4,13 @@ import request from "@/utils/request";
  * @param params
  * */
 export function stats(params:any){
-    return request(
-        {
-            url:'/api/admin/index',
-            method:'GET',
-            params
+	return request(
+		{
+			url:"/api/admin/index",
+			method:"GET",
+			params
 
-        }
-    );
+		}
+	);
 }
 

@@ -1,0 +1,96 @@
+import { h } from "vue";
+import { NIcon } from "naive-ui";
+// import {BookOutline as BookIcon} from "@vicons/ionicons5";
+// import router from "@/router";
+export const renderIcon = (icon) => {
+    return () => h(NIcon, null, { default: () => h(icon) });
+};
+/**
+ * 递归组装菜单格式
+ */
+export function generatorMenu(routerMap) {
+    // routerMap 按照 sort 排序
+    routerMap.sort((a, b) => a.meta.sort - b.meta.sort);
+    let result = routerMap.map((item) => {
+        // 判断 item.name 是否在 permissions 中 如果不存在跳过
+        let menu = {
+            label: item?.meta?.title,
+            key: item?.name,
+            icon: item.meta?.icon,
+        };
+        if (item.children && item.children.length > 1) { // 有子元素并且长度大于1，不止一个
+            menu.children = generatorMenu(item.children); // 递归
+        }
+        else if (item.children && item.children.length === 1) {
+            menu.key = item?.children[0].name;
+        }
+        return menu;
+    });
+    // 去除result null
+    return result;
+    //   {
+    //     label: '首页',
+    //     key: 'go-back-home',
+    //     icon: renderIcon(HomeIcon)
+    //   },
+    // routerMap 按照 sort 排序
+    // routerMap.sort((a, b) => a.meta.sort - b.meta.sort);
+    //
+    // let result = routerMap.map((item) => {
+    //     // 判断是否是根路由
+    //     const isRoot = isRootRouter(item);
+    //     const info = isRoot ? item.children[0] : item;
+    //     let menu =  {
+    //         ...info,
+    //         label: info.meta.title,
+    //         key: info.name,
+    //         icon: info.meta?.icon,
+    //     }
+    //     console.log(menu,'menu')
+    //     if (item.children && item.children.length > 1) {
+    //         menu.children = generatorMenu(item.children)
+    //     }
+    //     return menu;
+    //
+    // })
+    // return result;
+    // {
+    //     label: '且听风吟',
+    //         key: 'hear-the-wind-sing',
+    //     icon: renderIcon(BookIcon)
+    // }
+    // routerMap.map((item) => {
+    //     const currentMenu = {
+    //         ...info,
+    //         ...info.meta,
+    //         label: info.meta?.title,
+    //         key: info.name,
+    //         icon: isRoot ? item.meta?.icon : info.meta?.icon,
+    //     };
+    //
+    // })
+    // return filterRouter(routerMap).map((item) => {
+    //     const isRoot = isRootRouter(item);
+    //     const info = isRoot ? item.children[0] : item;
+    //     const currentMenu = {
+    //         ...info,
+    //         ...info.meta,
+    //         label: info.meta?.title,
+    //         key: info.name,
+    //         icon: isRoot ? item.meta?.icon : info.meta?.icon,
+    //     };
+    //     // 是否有子菜单，并递归处理
+    //     if (info.children && info.children.length > 0) {
+    //         // Recursion
+    //         currentMenu.children = generatorMenu(info.children);
+    //     }
+    //     return currentMenu;
+    // });
+}
+/**
+ * 判断根路由 Router
+ * */
+export function isRootRouter(item) {
+    return item.children?.length === 1;
+}
+//# sourceMappingURL=index.js.map

@@ -5,10 +5,10 @@ import request from "@/utils/request";
  * @param params
  */
 export function uploadToken() {
-    return request(
-        {
-            url: '/api/auth/oss/token',
-            method: 'GET',
-        }
-    );
+	return request(
+		{
+			url: "/api/auth/oss/token",
+			method: "GET",
+		}
+	);
 }

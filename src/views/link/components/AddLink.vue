@@ -16,17 +16,20 @@
         <n-button type="error"  @click="$emit('checkShowModal',false)">X</n-button>
       </template>
       <n-form  ref="formRef" :model="model" :rules="rules">
-        <n-form-item path="name" label="名称">
+        <n-form-item path="name" >
+          <div class="title">名称：</div>
           <n-input v-model:value="model.name" placeholder="请输入" />
         </n-form-item>
-        <n-form-item path="url" label="跳转链接URL"  >
+        <n-form-item path="url">
+          <div class="title">跳转链接URL：</div>
           <n-input
               v-model:value="model.url"
               type="email"
               placeholder="跳转链接URL"
           />
         </n-form-item>
-        <n-form-item label="是否启用" path="status">
+        <n-form-item path="status">
+          <div class="title" style="width: 28%">是否启用：</div>
           <n-radio-group v-model:value="model.status" name="status">
             <n-space>
               <n-radio :value="0">
@@ -38,7 +41,8 @@
             </n-space>
           </n-radio-group>
         </n-form-item>
-        <n-form-item label="选择商品图" path="img">
+        <n-form-item path="img">
+          <div class="title">选择商品图：</div>
           <Upload @backKey="backKey"></Upload>
         </n-form-item>
         <n-row :gutter="[0, 24]">
@@ -60,71 +64,71 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref } from "vue";
 import { addLink } from "@/api/link";
-import Upload from '@/components/Upload/index.vue';
+import Upload from "@/components/Upload/index.vue";
 
 const props =  defineProps({
-  showModal: {
-    type: Boolean,
-    default: false
-  }
-})
-const emit = defineEmits(['checkShowModal','shuaxin'])
+	showModal: {
+		type: Boolean,
+		default: false
+	}
+});
+const emit = defineEmits(["checkShowModal","shuaxin"]);
 
 const model = ref({
-  name: null,
-  img: null,
-  url: null,
-  status: null
-})
+	name: null,
+	img: null,
+	url: null,
+	status: null
+});
 const rules = {
-  name: [
-    {
-      required: true,
-      message: '请输入标题'
-    }
-  ],
-  img: [
-    {
-      required: true,
-      message: '请上传图片'
-    }
-  ],
-  url: [
-    {
-      required: true,
-      message: '输入输入跳转链接'
-    }
-  ],
-  status: [
-    {
-      required: true,
-      message: '请选择状态'
-    }
-  ],
-}
-const formRef = ref()
+	name: [
+		{
+			required: true,
+			message: "请输入标题"
+		}
+	],
+	img: [
+		{
+			required: true,
+			message: "请上传图片"
+		}
+	],
+	url: [
+		{
+			required: true,
+			message: "输入输入跳转链接"
+		}
+	],
+	status: [
+		{
+			required: true,
+			message: "请选择状态"
+		}
+	],
+};
+const formRef = ref();
 const linkSubmit = (e)=>{
-  e.preventDefault()
-  formRef.value.validate(errors=>{
-    if(errors){
-      console.log(errors)
-    }else{
-      // 请求API 添加数据
-      addLink(model.value).then(res=>{
-        console.log(res)
-        window.$message.success('添加成功')
-        emit('checkShowModal',false)
-        emit('reloadTable')
-      })
-      console.log(model.value)
-    }
-  })
-}
+	e.preventDefault();
+	formRef.value.validate(errors=>{
+		if(errors){
+			console.log(errors);
+		}else{
+			// 请求API 添加数据
+			addLink(model.value).then(res=>{
+				console.log(res);
+				window.$message.success("添加成功");
+				emit("checkShowModal",false);
+				emit("reloadTable");
+			});
+			console.log(model.value);
+		}
+	});
+};
 const backKey = (key)=>{
-  model.value.img = key
-}
+	model.value.img = key;
+};
 </script>
 
 <style scoped>

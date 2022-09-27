@@ -46,6 +46,7 @@
               :data="data"
               :pagination="pagination"
               :bordered="false"
+              :loading="loading"
           />
           <div class="p-4 flex justify-end pr-10">
 <!--            分页组件  绑定数据                 	当前页发生改变时的回调函数-->
@@ -60,151 +61,153 @@
 </template>
 
 <script lang="ts" setup>
-import { h,ref,onMounted} from 'vue'
-import { NButton, useMessage,NAvatar,NSwitch,useLoadingBar } from 'naive-ui'
-import AddUser from './components/AddUser.vue'
-import EditUser from './components/EditUser.vue'
-import { users,getUserLock } from '@/api/users'
-const page = ref(1)
-const message = useMessage()
-const data = ref([])
-const totalPages = ref(0)
+import { h,ref,onMounted} from "vue";
+import { NButton, useMessage,NAvatar,NSwitch,useLoadingBar } from "naive-ui";
+import AddUser from "./components/AddUser.vue";
+import EditUser from "./components/EditUser.vue";
+import { users,getUserLock } from "@/api/users";
+const page = ref(1);
+const message = useMessage();
+const loading = ref(true);
+const data = ref([]);
+const totalPages = ref(0);
 const columns = [
-  {
-    title: '头像',
-    key: 'avatar',
-    align:'center',
-    render (row) {
-      return h(NAvatar,{round:true,src:row.avatar_url,size:'medium'})
-    }
-  },
-  {
-    title: '姓名',
-    key: 'name',
-    align:'center',
+	{
+		title: "头像",
+		key: "avatar",
+		align:"center",
+		render (row) {
+			return h(NAvatar,{round:true,src:row.avatar_url,size:"medium"});
+		}
+	},
+	{
+		title: "姓名",
+		key: "name",
+		align:"center",
 
-  },
-  {
-    title: '邮箱',
-    key: 'email',
-    align:'center',
+	},
+	{
+		title: "邮箱",
+		key: "email",
+		align:"center",
 
-  },
-  {
-    title: '是否禁用',
-    key: 'is_locked',
-    align:'center',
-    render(row){
-      return h(NSwitch,{
-        size:'medium',
-        color:'#1890ff',
-        activeColor:'#52c41a',
-        inactiveColor:'#d9d9d9',
-        activeValue:1,
-        inactiveValue:0,
-        value:row.is_locked == 1 ? false : true,
-        onClick:()=>{
-          console.log(row.is_locked,'row.isload')
-          row.is_locked==0?row.is_locked=1:row.is_locked=0
-          console.log(row.is_locked,'row.isload')
-          handleChange(row)
-        }
-      })
-    }
-  },
-  {
-    title: '创建时间',
-    key: 'created_at',
-    align:'center',
+	},
+	{
+		title: "是否禁用",
+		key: "is_locked",
+		align:"center",
+		render(row){
+			return h(NSwitch,{
+				size:"medium",
+				color:"#1890ff",
+				activeColor:"#52c41a",
+				inactiveColor:"#d9d9d9",
+				activeValue:1,
+				inactiveValue:0,
+				value:row.is_locked == 1 ? false : true,
+				onClick:()=>{
+					console.log(row.is_locked,"row.isload");
+					row.is_locked==0?row.is_locked=1:row.is_locked=0;
+					console.log(row.is_locked,"row.isload");
+					handleChange(row);
+				}
+			});
+		}
+	},
+	{
+		title: "创建时间",
+		key: "created_at",
+		align:"center",
 
-  },
-  {
-    title: '操作',
-    key: 'created_at',
-    align:'center',
-    render(row){
-      return h(NButton,{
-        size:'small',
-        color:'#1890ff',
-        strong:true,
-        onClick:()=>{
-          user_id.value = row.id
-          showEditModal.value = true
-        }
-      },'编辑')
-    }},
-]
-const pagination = ref(false as const)
+	},
+	{
+		title: "操作",
+		key: "created_at",
+		align:"center",
+		render(row){
+			return h(NButton,{
+				size:"small",
+				color:"#1890ff",
+				strong:true,
+				onClick:()=>{
+					user_id.value = row.id;
+					showEditModal.value = true;
+				}
+			},"编辑");
+		}},
+];
+const pagination = ref(false as const);
 const formSearch = ref({
-  name:'',
-  email:''
-})
+	name:"",
+	email:""
+});
 // 添加模态框显示状态
-const showModal = ref(false)
+const showModal = ref(false);
 // 编辑模态框
-const showEditModal = ref(false)
+const showEditModal = ref(false);
 
-const user_id = ref('')
+const user_id = ref("");
 
 const checkEditModal = (show:boolean) => {
-  showEditModal.value = show
-}
-const loadingBar = useLoadingBar()
+	showEditModal.value = show;
+};
+const loadingBar = useLoadingBar();
 
 onMounted(()=>{
-  getUserList({})
-})
+	getUserList({});
+});
 const updatePage = (pageNum) => {
-  getUserList({
-    current:pageNum,
-    name:formSearch.value.name,
-    email:formSearch.value.email
-  })
-}
+	getUserList({
+		current:pageNum,
+		name:formSearch.value.name,
+		email:formSearch.value.email
+	});
+};
 const searchSubmit = (e) =>{
-  e.preventDefault()
-  getUserList({
-    name:formSearch.value.name,
-    email:formSearch.value.email,
-    current:1
-  })
-}
+	e.preventDefault();
+	getUserList({
+		name:formSearch.value.name,
+		email:formSearch.value.email,
+		current:1
+	});
+};
 const searchReload = ()=>{
-  getUserList({})
-  formSearch.value = {
-    // 重置后，进行搜索框清空
-    name:'',
-    email:''
-  }
-}
+	getUserList({});
+	formSearch.value = {
+		// 重置后，进行搜索框清空
+		name:"",
+		email:""
+	};
+};
 const getUserList = (params) =>{
-  loadingBar.start()
-  users(params).then(users =>{
-    data.value = users.data
-    totalPages.value = users.meta.pagination.total_pages
-    page.value = users.meta.pagination.current_page
-    loadingBar.finish()
-  }).catch(err=>{
-    loadingBar.error()
-  })
-  // getUserLock(user_id)
-}
+	loadingBar.start();
+	users(params).then(users =>{
+		data.value = users.data;
+		totalPages.value = users.meta.pagination.total_pages;
+		page.value = users.meta.pagination.current_page;
+		loadingBar.finish();
+		loading.value = false;
+	}).catch(err=>{
+		loadingBar.error();
+	});
+	// getUserLock(user_id)
+};
 const handleChange = (row) => {
-  getUserLock(row.id).then(()=>{
-    //可以在此处设置验证是否进行状态的修改
-    message.info('禁用状态已修改')
-  })
-}
+	getUserLock(row.id).then(()=>{
+		//可以在此处设置验证是否进行状态的修改
+		message.info("禁用状态已修改");
+	});
+};
 const checkShowModal = (status)=>{
-  showModal.value = status
-}
+	showModal.value = status;
+};
 const reload = ()=>{
-  getUserList({
-    current:page.value,
-    name:formSearch.value.name,
-    email:formSearch.value.email
-  })
-}
+	getUserList({
+		current:page.value,
+		name:formSearch.value.name,
+		email:formSearch.value.email
+	});
+};
 </script>
 
 <style scoped>

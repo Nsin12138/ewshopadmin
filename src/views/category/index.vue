@@ -16,137 +16,110 @@
               :columns="columns"
               :data="data"
               default-expand-all
+              :loading="loading"
           />
-          <div class="p-4 flex justify-end pr-10">
-            <!--            分页组件  绑定数据                 	当前页发生改变时的回调函数-->
-            <n-pagination v-model:page="page" @update:page="updatePage" :page-count="totalPages" />
-          </div>
+
         </div>
       </div>
-      <AddCategory :showModal="showModal" :data123="data" @checkShowModal="checkShowModal" @reloadTable="reload"></AddCategory>
+      <AddCategory :showModal="showModal" @checkShowModal="checkShowModal" @reloadTable="reload"></AddCategory>
+      <EditCategory v-if="showEditModal" :dataName="data"  :category_id="category_id" :showModal="showEditModal" @checkShowModal="checkEditModal" @reloadTable="reload"></EditCategory>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import {h, ref, onMounted, reactive} from 'vue'
-import { NButton,NInputNumber, useMessage, useLoadingBar} from 'naive-ui'
-import { category,getCategorySeq} from '@/api/category'
+import {h, ref, onMounted} from "vue";
+import {NButton, NInputNumber, useLoadingBar} from "naive-ui";
+import {category, getCategorySeq} from "@/api/category";
 import AddCategory from "@/views/category/components/AddCategory.vue";
-import type { DataTableColumns } from 'naive-ui'
+import EditCategory from "@/views/category/components/EditCategory.vue";
 
-const page = ref(1)
-const message = useMessage()
-const data = ref([])
-const totalPages = ref(0)
-
+const Nsin = {
+	seq:0
+};
+const data = ref([]);
 const columns = [
-  {
-    title: '分类名称',
-    key: 'name',
-    width:'60%',
-  },
-  {
-    title: '分类排序',
-    key: 'seq',
-    width:'10%',
-    sorter: (row1, row2) => row1.seq - row2.seq,
-    render(row) {
-      return h(NInputNumber,{
-        style:'max-width:100%',
-        defaultValue:row.seq,
-        showButton:false,
-        max:42,
-        updateValueOnInput:false,
-        blur:handleBlur,
-        domProps:{
-          value: row.value
-        },
-        on: {
-          input (event){
-            row.value = event.target.value;
-          }
-        },
-        onBlur:()=>{
-          row.seq = row.value
-          console.log(blur)
-          // handleChange(row)
-          handleBlur(row)
-        }
-      })
-    }
-  },
-  {
-    title: '操作',
-    key: 'created_at',
-    align:'center',
-    render(row){
-      return h(NButton,{
-        size:'small',
-        color:'#1890ff',
-        strong:true,
-        onClick:()=>{
-          category_id.value = row.id
-          showEditModal.value = true
-        }
-      },'修改')
-    }}
-]
-const onLoad = (row: Record<string, unknown>)=> {
-  return new Promise<void>((resolve) => {
-    setTimeout(() => {
-      row.children = [{ key: row.key + '-1', example: row.key + '-1' }]
-      resolve()
-    }, 1000)
-  })
-}
+	{
+		title: "分类名称",
+		key: "name",
+		width:"60%",
+	},
+	{
+		title: "分类排序",
+		key: "seq",
+		width:"10%",
+		align:"center",
+		sorter: (row1, row2) => row1.seq - row2.seq,
+		/*render(row){
+			return h(NInputNumber,{
+				defaultValue:row.seq,
+				showButton:false,
+				value:ref(),
+				// modelValue:ref(row.seq),
+				onBlur(){
+					console.log(row);
+					row.seq = NInputNumber.value;
+					getCategorySeq(row.id,row.seq,params).then(res=>{
+						console.log(res);
+						loadingBar.finish();
+					});
+					
+				}
+			});
+		}*/
+	},
+	{
+		title: "操作",
+		key: "created_at",
+		align:"center",
+		render(row){
+			return h(NButton,{
+				size:"small",
+				color:"#1890ff",
+				strong:true,
+				onClick:()=>{
+					category_id.value = row.id;
+					showEditModal.value = true;
+				}
+			},"修改");
+		}}
+];
+const params={};
+const loading = ref(true);
 // 添加模态框显示状态
-const showModal = ref(false)
+const showModal = ref(false);
 // 编辑模态框
-const showEditModal = ref(false)
+const showEditModal = ref(false);
 
-const loadingBar = useLoadingBar()
-const category_id = ref('')
+const loadingBar = useLoadingBar();
+const category_id = ref("");
 
 onMounted(()=>{
-  getCategoryList({type:'all'})
-})
-const updatePage = (pageNum) => {
-  getCategoryList({
-    current:pageNum,
-  })
-}
+	getCategoryList({type:"all"});
+});
 
-// }
-const  getCategoryList = async  (params) =>{
-  loadingBar.start()
-  const res = await category(params)
-    console.log(category,'cartegory')
-    data.value = res
-    console.log(data.value);
-}
-
-
-const handleBlur = (row) => {
-  // const seq = row.value
-  getCategorySeq(row.id,row.seq).then(()=>{
-
-    //可以在此处设置验证是否进行状态的修改
-    console.log(row,'rowseq')
-    message.info('排序状态已修改')
-  })
-}
-
+const checkEditModal = (show:boolean) => {
+	showEditModal.value = show;
+};
 const checkShowModal = (status)=>{
-  showModal.value = status
-}
+	showModal.value = status;
+};
+
+const  getCategoryList =  (params) =>{
+	loadingBar.start();
+	category(params).then(res=>{
+		console.log(category,"cartegory");
+		data.value = res;
+		loadingBar.finish();
+		loading.value = false;
+	}).catch(err=>{
+		console.log(err);
+		loadingBar.error();
+	});
+};
 const reload = ()=>{
-  getCategoryList({
-    current:page.value,
-
-  })
-}
-
+	getCategoryList({type:"all"});
+};
 </script>
 
 <style scoped>

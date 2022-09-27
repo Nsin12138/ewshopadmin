@@ -16,15 +16,17 @@
         <n-button type="error"  @click="$emit('checkShowModal',false)">X</n-button>
       </template>
       <n-form v-if="showForm"  ref="formRef" :model="model" :rules="rules">
-        <n-form-item path="name" label="姓名">
+        <n-form-item path="name">
+          <div class="title">姓名：</div>
           <n-input v-model:value="model.name" placeholder="请输入姓名" />
         </n-form-item>
-        <n-form-item path="email" label="邮箱"  >
-          <span>{{model.email}}</span>
-        </n-form-item>
+        <n-form-item path="email"  >
+          <div class="title" style="width: 23%">邮箱：</div>
+          <div>{{model.email}}</div>
+        </n-form-item>.
         <n-row :gutter="[0, 24]">
           <n-col :span="24">
-            <div style="display: flex; justify-content: flex-end">
+            <div style="display: flex; justify-content: space-evenly">
               <n-button
                   round
                   type="primary"
@@ -42,64 +44,64 @@
 </template>
 
 <script setup>
-import { h, ref,defineProps,defineEmits,onMounted } from 'vue'
+import { h, ref,defineProps,defineEmits,onMounted } from "vue";
 import {addUser,getUserInfo,updateUser} from "@/api/users";
 const props =  defineProps({
-  showModal: {
-    type: Boolean,
-    default: false
-  },
-  user_id:{
-    type: Number,
-    default: ''
-  }
-})
+	showModal: {
+		type: Boolean,
+		default: false
+	},
+	user_id:{
+		type: Number,
+		default: ""
+	}
+});
 const model = ref({
-  name: null,
-  email: null,
-})
-const showForm = ref(false)
-const emit = defineEmits(['checkShowModal','shuaxin'])
+	name: null,
+	email: null,
+});
+const showForm = ref(false);
+const emit = defineEmits(["checkShowModal","shuaxin"]);
 onMounted(()=>{
-  console.log(123123)
-  if(props.user_id){
-    getUserInfo(props.user_id).then(res=>{
-      model.value.name = res.name
-      model.value.email = res.email
-      showForm.value = true
-    })
-  }
-})
+	console.log(123123);
+	if(props.user_id){
+		getUserInfo(props.user_id).then(res=>{
+			model.value.name = res.name;
+			model.value.email = res.email;
+			showForm.value = true;
+		});
+	}
+});
 
 const rules = {
-  name: [
-    {
-      required: true,
-      message: '请输入姓名'
-    }
-  ],
-  email: [
-    {
-      required: true,
-      message: '请输入邮箱'
-    }
-  ]
-}
-const formRef = ref()
+	name: [
+		{
+			required: true,
+			message: "请输入姓名"
+		}
+	],
+	email: [
+		{
+			required: true,
+			message: "请输入邮箱"
+		}
+	]
+};
+const formRef = ref();
 const userSubmit = (e)=>{
-  e.preventDefault()
-  formRef.value.validate(errors=>{
-    if(errors){
-      console.log(errors)
-    }else{
-      updateUser(props.user_id,model.value).then(res=>{
-        window.$message.success('修改成功')
-        emit('checkShowModal',false)
-        emit('reloadTable')
-      })
-    }
-  })
-}
+	e.preventDefault();
+	formRef.value.validate(errors=>{
+		if(errors){
+			console.log(errors);
+		}else{
+			updateUser(props.user_id,model.value).then(res=>{
+				window.$message.success("修改成功");
+				emit("checkShowModal",false);
+				emit("reloadTable");
+			});
+		}
+	});
+};
 
 </script>
 

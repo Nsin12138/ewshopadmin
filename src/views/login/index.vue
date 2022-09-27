@@ -52,11 +52,11 @@
 <script lang="ts" setup>
 import { reactive, ref } from "vue";
 import { useRouter} from "vue-router";
-import { PersonOutline, LockClosedOutline} from '@vicons/ionicons5';
+import { PersonOutline, LockClosedOutline} from "@vicons/ionicons5";
 import { useUserStore } from "@/store/user";
-import { useMessage } from 'naive-ui'
-const message = useMessage()
-window.$message = useMessage()
+import { useMessage } from "naive-ui";
+const message = useMessage();
+window.$message = useMessage();
 
 
 interface FormState {
@@ -66,56 +66,56 @@ interface FormState {
 const formRef = ref();
 const router = useRouter();
 const userStore = useUserStore();
-const loading = ref(false)
+const loading = ref(false);
 const formInline = reactive({
-  username:'super@a.com',
-  password:'123123'
+	username:"super@a.com",
+	password:"123123"
 });
 // 验证规则
 const rules = {
-  // 失去焦点时触发
-  username:{ required: true, message: '请输入用户名', trigger: 'blur' },
-  password:{ required: true, message: '请输入密码', trigger: 'blur' },
+	// 失去焦点时触发
+	username:{ required: true, message: "请输入用户名", trigger: "blur" },
+	password:{ required: true, message: "请输入密码", trigger: "blur" },
 };
 const handleSubmit = (e:Event) => {
-  //e.preventDefault();
-  // 表单验证
-  formRef.value.validate(async(errors:any)=> {
-    if (!errors) {
-      // return; // 有错误就返回，不执行，不再往下发送请求
-      // 接收数据
-      const {username, password} = formInline;
-      // 显示登录中
-      loading.value = true;
-      // 调整数据结构
-      const params: FormState = {
-        email: username,
-        password
-      };
-      try {
-        // 执行登录操作
-        const response = userStore.login(params).then(res => {      // res是userStore里面返回的数据
-          // 关闭窗口
-          console.log(res);
-          message.success('登陆成功')
-          loading.value = false;
-          // 弹出提示  登陆成功
-          // 跳转回首页
-          router.push({name: 'dashboard'});
-        }).catch(err => {
-          console.log(err);
-          loading.value = false;
-        });
-        // 成功跳转到首页
-        // 失败后提示
-      } finally {
-        loading.value = false;
-      }
-    }
-    else {
-        // message.error('请填写完整信息，并且进行验证码校验')
-      }
-    })
+	//e.preventDefault();
+	// 表单验证
+	formRef.value.validate(async(errors:any)=> {
+		if (!errors) {
+			// return; // 有错误就返回，不执行，不再往下发送请求
+			// 接收数据
+			const {username, password} = formInline;
+			// 显示登录中
+			loading.value = true;
+			// 调整数据结构
+			const params: FormState = {
+				email: username,
+				password
+			};
+			try {
+				// 执行登录操作
+				const response = userStore.login(params).then(res => {      // res是userStore里面返回的数据
+					// 关闭窗口
+					console.log(res);
+					message.success("登陆成功");
+					loading.value = false;
+					// 弹出提示  登陆成功
+					// 跳转回首页
+					router.push({name: "dashboard"});
+				}).catch(err => {
+					console.log(err);
+					loading.value = false;
+				});
+				// 成功跳转到首页
+				// 失败后提示
+			} finally {
+				loading.value = false;
+			}
+		}
+		else {
+			// message.error('请填写完整信息，并且进行验证码校验')
+		}
+	});
 };
 
 </script>

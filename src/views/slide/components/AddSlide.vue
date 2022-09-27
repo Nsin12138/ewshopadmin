@@ -16,17 +16,20 @@
         <n-button type="error"  @click="$emit('checkShowModal',false)">X</n-button>
       </template>
       <n-form  ref="formRef" :model="model" :rules="rules">
-        <n-form-item path="title" label="标题">
+        <n-form-item path="title">
+          <div class="title">标题：</div>
           <n-input v-model:value="model.title" placeholder="请输入标题" />
         </n-form-item>
-        <n-form-item path="url" label="跳转URL"  >
+        <n-form-item path="url" >
+          <div class="title">跳转URL：</div>
           <n-input
               v-model:value="model.url"
               type="email"
               placeholder="请输入跳转URL"
           />
         </n-form-item>
-        <n-form-item label="是否启用" path="status">
+        <n-form-item  path="status">
+          <div class="title" style="width: 28%">是否启用：</div>
           <n-radio-group v-model:value="model.status" name="status">
             <n-space>
               <n-radio :value="0">
@@ -43,7 +46,7 @@
         </n-form-item>
         <n-row :gutter="[0, 24]">
           <n-col :span="24">
-            <div style="display: flex; justify-content: flex-end">
+            <div style="display: flex; justify-content: space-evenly">
               <n-button
                   round
                   type="primary"
@@ -60,69 +63,79 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref } from "vue";
 import { addSlide } from "@/api/slide";
-import Upload from '@/components/Upload/index.vue';
+import Upload from "@/components/Upload/index.vue";
 
 const props =  defineProps({
-  showModal: {
-    type: Boolean,
-    default: false
-  }
-})
-const emit = defineEmits(['checkShowModal','shuaxin'])
+	showModal: {
+		type: Boolean,
+		default: false
+	}
+});
+const emit = defineEmits(["checkShowModal","shuaxin"]);
 
 const model = ref({
-  title: null,
-  img: null,
-  url: null,
-  status: null
-})
+	title: null,
+	img: null,
+	url: null,
+	status: null
+});
 const rules = {
-  title: [
-    {
-      required: true,
-      message: '请输入标题'
-    }
-  ],
+	title: [
+		{
+			required: true,
+			message: "请输入标题"
+		}
+	],
 
-  url: [
-    {
-      required: true,
-      message: '输入输入跳转链接'
-    }
-  ],
-  status: [
-    {
-      required: true,
-      message: '请选择状态'
-    }
-  ],
-}
-const formRef = ref()
+	url: [
+		{
+			required: true,
+			message: "输入输入跳转链接"
+		}
+	],
+	status: [
+		{
+			required: true,
+			message: "请选择状态"
+		}
+	],
+};
+const formRef = ref();
 const slideSubmit = (e)=>{
-  e.preventDefault()
-  formRef.value.validate(errors=>{
-    if(errors){
-      console.log(errors)
-    }else{
-      // 请求API 添加数据
-      addSlide(model.value).then(res=>{
-        console.log(res)
-        window.$message.success('添加成功')
-        emit('checkShowModal',false)
-        emit('reloadTable')
-      })
-      console.log(model.value)
-    }
-  })
-}
+	e.preventDefault();
+	formRef.value.validate(errors=>{
+		if(errors){
+			console.log(errors);
+		}else{
+			// 请求API 添加数据
+			addSlide(model.value).then(res=>{
+				console.log(res);
+				window.$message.success("添加成功");
+				emit("checkShowModal",false);
+				emit("reloadTable");
+			});
+			console.log(model.value);
+		}
+	});
+};
 const backKey = (key)=>{
-  model.value.img = key
-}
+	model.value.img = key;
+};
 </script>
 
-<style scoped>
-
+<style>
+.title{
+  font-size: 16px;
+  height: 32px;
+  line-height: 30px;
+  text-align: center;
+  width: 40%;
+  margin-right: 5px;
+  border: 1px solid #ccc;
+  /*font-weight: bold;*/
+  background-color: #DEECF4;
+}
 </style>
 

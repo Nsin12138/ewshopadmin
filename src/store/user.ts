@@ -1,5 +1,5 @@
 import {defineStore} from "pinia";
-import {login,user} from '@/api/auth'
+import {login,user} from "@/api/auth";
 
 // 定义state中的数据类型
 export interface IUserState {
@@ -7,79 +7,81 @@ export interface IUserState {
     username:string;
     avatar:string;
     permissions:string[];
-    info:Object;
+    info:any;
 }
 export const useUserStore = defineStore({
-    id: 'app-user',
-    state: ():IUserState => ({
-        token:localStorage.getItem('token') || '', // 在页面刷新时已经保留token
-        username:'',
-        avatar:'',
-        permissions:[],
-        info:{},
-    }),
-    getters:{ // 接收
-        getToken():string {
-            return this.token;
-        },
-        getAvatar():string {
-            return this.avatar;
-        },
-        getUserName():string {
-            return this.username;
-        },
-        getPermissions():string[] {
-            return this.permissions;
-        },
-        async getUserInfo():Object {
-            // 判断 this.info 是否是空对象/不存在，不存在时调用getUser方法
-            if(!this.info?.id){
-                this.getUser();
-            }
-            return this.info;
-        }
-    },
-    actions:{
-      setToken(token: string){
-          // sessionStorage.setItem('token',token); // 一开新的窗口,token就会消失
-          // token本地储存  localStarage本地存储
-          localStorage.setItem('token',token)
-          this.token = token;
-      },
-      setAvatar(avatar: string){
-          this.avatar = avatar;
-      },
-      setUserInfo(info:Object){
-          this.info = info;
-      },
-      setUserName(username:string){
-          this.username = username;
-      },
-      setPermissions(permissions:string[]) {
-          this.permissions = permissions;
-      },
-        // 异步的登录方法
-      async login(userInfo:Object){
-          try {
-              const response = await login(userInfo);
-              if (response.access_token){
-                  this.setToken(response.access_token);
-                  // 登录之后，token已经拿到了，然后getUser获取调用,
-                  this.getUser();
-              }
-          }catch(error){
+	id: "app-user",
+	state: ():IUserState => ({
+		token:localStorage.getItem("token") || "", // 在页面刷新时已经保留token
+		username:"",
+		avatar:"",
+		permissions:[],
+		info:{},
+	}),
+	getters:{ // 接收
+		getToken():string {
+			return this.token;
+		},
+		getAvatar():string {
+			return this.avatar;
+		},
+		getUserName():string {
+			return this.username;
+		},
+		getPermissions():string[] {
+			return this.permissions;
+		},
+		async getUserInfo():Promise<object>{
+			// 判断 this.info 是否是空对象/不存在，不存在时调用getUser方法
 
-          }      },
-      async getUser(){
-          try {
-              const response = await user();
+			if(!this.info?.id)
+				this.getUser();
+			return this.info;
+		}
+	},
+	actions:{
+		setToken(token: string){
+			// sessionStorage.setItem('token',token); // 一开新的窗口,token就会消失
+			// token本地储存  localStarage本地存储
+			localStorage.setItem("token",token);
+			this.token = token;
+		},
+		setAvatar(avatar: string){
+			this.avatar = avatar;
+		},
+		setUserInfo(info:object){
+			this.info = info;
+		},
+		setUserName(username:string){
+			this.username = username;
+		},
+		setPermissions(permissions:string[]) {
+			this.permissions = permissions;
+		},
+		// 异步的登录方法
+		async login(userInfo:object){
+			try {
+				const response = await login(userInfo);
 
-              this.setUserInfo(response);
-              this.setAvatar(response.avatar);
-              this.setUserName(response.name);
-              return response;
-          }catch(error){
-          }
-      }
-    }
-})
+				if (response.access_token){
+
+					this.setToken(response.access_token);
+					// 登录之后，token已经拿到了，然后getUser获取调用,
+					await this.getUser();
+				}
+			}catch(error){
+				console.log(error);
+			}      },
+		async getUser(){
+			try {
+				const response = await user();
+				this.setUserInfo(response);
+				this.setAvatar(response.avatar);
+				this.setUserName(response.name);
+				return response;
+			}catch(error){
+				console.log(error);
+			}
+		}
+	}
+});

@@ -8,27 +8,29 @@
 </template>
 
 <script lang="ts" setup>
-import { ref,onMounted } from 'vue'
-const defaultKey = ref('')
-import { useRoute, useRouter } from 'vue-router';
-import {routeModuleList}  from '@/router'
+import { ref,onMounted, } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import {routeModuleList}  from "@/router";
+import {generatorMenu} from "@/utils";
 
-// const defaultkey = ref<string>
+
+const defaultKey = ref("");
 
 onMounted(()=>{
-  const route = useRoute();
-  // 获取当前路由的key
-  const routeKey = route.name;
-  defaultKey.value = routeKey;
-})
-const router = useRouter()
-import {generatorMenu, renderIcon} from '@/utils'
-const menuOptions = generatorMenu(routeModuleList)
+	const route = useRoute();
+	// 获取当前路由的key
+	const routeKey = route.name;
+	if (typeof routeKey === "string") {
+		defaultKey.value = routeKey;
+	}
+});
+const router = useRouter();
+const menuOptions = generatorMenu(routeModuleList);
 const handleUpdateValue=(key,item) =>{
-  console.log(key,item)
-  defaultKey.value = key
-  router.push({name:key})
-}
+	console.log(key,item);
+	defaultKey.value = key;
+	router.push({name:key});
+};
 
 </script>
 
