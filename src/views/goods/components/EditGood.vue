@@ -103,7 +103,7 @@ const model = ref({
 const showForm = ref(false);
 const emit = defineEmits(["checkShowModal","shuaxin"]);
 onMounted(()=>{
-	console.log(123123);
+	// console.log(123123);
 	if(props.good_id){
 		getGoodInfo(props.good_id).then(res=>{
 			model.value.category_id = res.category_id;
@@ -167,7 +167,7 @@ const userSubmit = (e)=>{
 	e.preventDefault();
 	formRef.value.validate(errors=>{
 		if(errors){
-			console.log(errors);
+			// console.log(errors);
 		}else{
 			changeGood(props.good_id,model.value).then(res=>{
 				window.$message.success("修改成功");

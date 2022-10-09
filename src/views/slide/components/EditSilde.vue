@@ -71,14 +71,14 @@ const model = ref({
 const showForm = ref(false);
 const emit = defineEmits(["checkShowModal","shuaxin"]);
 onMounted(()=>{
-	console.log(123123);
+	// console.log(123123);
 	if(props.slide_id){
 		getSlidesInfo(props.slide_id).then(res=>{
 			model.value.title = res.title;
 			model.value.url = res.url;
 			model.value.img = res.img;
 			showForm.value = true;
-			console.log(res);
+			// console.log(res);
 		});
 	}
 });
@@ -108,7 +108,7 @@ const slideSubmit = (e)=>{
 	e.preventDefault();
 	formRef.value.validate(errors=>{
 		if(errors){
-			console.log(errors);
+			// console.log(errors);
 		}else{
 			changeSlide(props.slide_id,model.value).then(res=>{
 				window.$message.success("修改成功");

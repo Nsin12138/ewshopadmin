@@ -190,13 +190,13 @@ const updatePage = (pageNum) => {
 };
 const searchSubmit = (e) =>{
 	e.preventDefault();
-	console.log(formSearch.value.title);
+	// console.log(formSearch.value.title);
 	getCommentList({
 		current:1,
 		goods_title:formSearch.value.title,
 		include:params.include
 	});
-	console.log();
+	// console.log();
 	// repetition ()
 };
 const searchReload = ()=>{
@@ -231,8 +231,8 @@ const getCommentList = (params) =>{
 	loadingBar.start();
 	comments(params).then((res:any) =>{
 		data.value = res.data;
-		console.log(data.value,"1q1111111111111111111");
-		console.log(res,"33333333333333333333333");
+		// console.log(data.value,"1q1111111111111111111");
+		// console.log(res,"33333333333333333333333");
 		totalPages.value = res.meta.pagination.total_pages;
 		page.value = res.meta.pagination.current_page;
 		loadingBar.finish();

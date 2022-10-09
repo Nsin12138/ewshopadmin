@@ -73,7 +73,7 @@ const model = ref({
 const showForm = ref(false);
 const emit = defineEmits(["checkShowModal","shuaxin"]);
 onMounted(()=>{
-	console.log(123123);
+	// Comment(123123);
 	if(props.link_id){
 		getLinksInfo(props.link_id).then(res=>{
 			model.value.name = res.name;
@@ -81,7 +81,7 @@ onMounted(()=>{
 			model.value.img = res.img;
 			model.value.status = res.status;
 			showForm.value = true;
-			console.log(res);
+			// console.log(res);
 		});
 	}
 });
@@ -117,7 +117,7 @@ const linkSubmit = (e)=>{
 	e.preventDefault();
 	formRef.value.validate(errors=>{
 		if(errors){
-			console.log(errors);
+			// console.log(errors);
 		}else{
 			changeLink(props.link_id,model.value).then(res=>{
 				window.$message.success("修改成功");

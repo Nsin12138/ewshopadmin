@@ -82,9 +82,9 @@ const columns:any = [
 				inactiveValue:0,
 				value:row.status == 0 ? false : true,
 				onClick:()=>{
-					console.log(row.status,"row.isload");
+					// console.log(row.status,"row.isload");
 					row.status==0?row.status=1:row.status=0;
-					console.log(row.status,"row.isload");
+					// console.log(row.status,"row.isload");
 					handleChange(row);
 				}
 			});
@@ -170,7 +170,7 @@ const updatePage = (pageNum) => {
 const getUserList = (params) =>{
 	loadingBar.start();
 	slides(params).then((res:any) =>{
-		console.log(res);
+		// console.log(res);
 		data.value = res.data;
 		totalPages.value = res.meta.pagination.total_pages;
 		page.value = res.meta.pagination.current_page;

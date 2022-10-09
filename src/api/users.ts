@@ -28,7 +28,7 @@ export  function getUserLock(userid) {
 	return request(
 		{
 			url: `/api/admin/users/${userid}/lock`,
-			method: "PATCH",
+			method: "PATCH"
 		}
 	);
 }

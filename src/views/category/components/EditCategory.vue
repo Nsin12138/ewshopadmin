@@ -63,7 +63,7 @@ const model = ref({
 const showForm = ref(false);
 const emit = defineEmits(["checkShowModal","shuaxin"]);
 onMounted(()=>{
-	console.log(123123);
+	// console.log(123123);
 	if(props.category_id){
 		getCategoryInfo(props.category_id).then(res=>{
 			model.value.pid = res.pid;
@@ -86,7 +86,7 @@ const categorySubmit = (e)=>{
 	e.preventDefault();
 	formRef.value.validate(errors=>{
 		if(errors){
-			console.log(errors);
+			// console.log(errors);
 		}else{
 			updateCategory(props.category_id,model.value).then(res=>{
 				window.$message.success("修改成功");

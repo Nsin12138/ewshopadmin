@@ -14,7 +14,7 @@ Object.keys(modules).forEach((key) => {
 const routes = [
 	{
 		path: "/",
-		redirect:"/dashboard/console"
+		redirect:"/Login"
 		// component: Home
 	},
 	{
@@ -33,17 +33,13 @@ const router = createRouter({
 	history: createWebHistory(),
 	routes:baseRoutes, // `routes: routes` 的缩写
 });
-router.beforeEach((to,from,next) =>{
-	console.log(from);
+router.beforeEach((to,_from,next) =>{
 	document.title = (to?.meta?.title as string) || document.title;
 	if(to.name != "Login"){
 		// 判断是否登录
 		if(!localStorage.getItem("token")){
 			next({
-				path: "/login",
-				query: {
-					redirect: to.fullPath
-				}
+				path: "/login"
 			});
 		}
 	}

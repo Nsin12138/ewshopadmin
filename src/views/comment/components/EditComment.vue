@@ -65,7 +65,7 @@ const params={
 const showForm = ref(false);
 const emit = defineEmits(["checkShowModal","shuaxin"]);
 onMounted(()=>{
-	console.log(123123);
+	// console.log(123123);
 	if(props.comment_id){
 		getCommentInfo(props.comment_id,params).then(res=>{
 			model.value.reply = res.reply;
@@ -79,7 +79,7 @@ const commentSubmit = (e)=>{
 	e.preventDefault();
 	formRef.value.validate(errors=>{
 		if(errors){
-			console.log(errors);
+			// console.log(errors);
 		}else{
 			getCommentReply(props.comment_id,model.value,params).then(res=>{
 				window.$message.success("修改成功");

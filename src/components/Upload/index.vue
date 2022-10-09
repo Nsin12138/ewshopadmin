@@ -30,7 +30,7 @@ const customRequest = ({file,action,header,onFinish,onError})=>{
 		formData.append("Signature",res.signature);
 		formData.append("file",file.file);
 		// 发送请求
-		console.log(formData);
+		// console.log(formData);
 		axios.post(res.host,formData,{
 			headers:{
 				"Content-Type":"multipart/form-data"

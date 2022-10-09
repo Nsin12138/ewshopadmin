@@ -89,12 +89,12 @@ const checkShowModal = (status)=>{
 const  getCategoryList =  (params) =>{
 	loadingBar.start();
 	category(params).then(res=>{
-		console.log(category,"cartegory");
+		// console.log(category,"cartegory");
 		data.value = res;
 		loadingBar.finish();
 		loading.value = false;
 	}).catch(err=>{
-		console.log(err);
+		// console.log(err);
 		loadingBar.error();
 	});
 };

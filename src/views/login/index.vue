@@ -16,7 +16,7 @@
             :rules="rules"
         >
           <n-form-item path="username">
-            <n-input v-model:value="formInline.username" placeholder="请输入用户名">
+            <n-input v-model:value="formInline.username" placeholder="用户名:super@a.com">
               <template #prefix>
                 <n-icon size="18" color="#808695">
                   <PersonOutline />
@@ -29,7 +29,7 @@
                 v-model:value="formInline.password"
                 type="password"
                 showPasswordOn="click"
-                placeholder="请输入密码"
+                placeholder="密码:123123"
             >
               <template #prefix>
                 <n-icon size="18" color="#808695">
@@ -56,7 +56,7 @@ import { PersonOutline, LockClosedOutline} from "@vicons/ionicons5";
 import { useUserStore } from "@/store/user";
 import { useMessage } from "naive-ui";
 const message = useMessage();
-// window.$message = useMessage();
+(<any>window).$message = useMessage();
 
 
 interface FormState {
@@ -68,8 +68,8 @@ const router = useRouter();
 const userStore = useUserStore();
 const loading = ref(false);
 const formInline = reactive({
-	username:"super@a.com",
-	password:"123123"
+	username:"",
+	password:""
 });
 // 验证规则
 const rules = {
@@ -96,14 +96,14 @@ const handleSubmit = () => {
 				// 执行登录操作
 				userStore.login(params).then(res => {      // res是userStore里面返回的数据
 					// 关闭窗口
-					console.log(res);
+					// Comment(res);
 					message.success("登陆成功");
 					loading.value = false;
 					// 弹出提示  登陆成功
 					// 跳转回首页
 					router.push({name: "dashboard"});
-				}).catch(err => {
-					console.log(err);
+				}).catch(() => {
+					// console.log(err);
 					loading.value = false;
 				});
 				// 成功跳转到首页

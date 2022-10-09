@@ -6,7 +6,7 @@
         <n-avatar
             round
             size="small"
-            :src="avatar"
+            :src="userStore.getAvatar"
         />
         <span class="pl-2">{{userStore.getUserName}}</span>
         <!--                        超级管理员-->
@@ -32,7 +32,7 @@ const options:any = ref([
 		icon: renderIcon(LogoutIcon)
 	}
 ]);
-const avatar = userStore.getAvatar;
+// const avatar = "https://oss.shop.eduwork.cn/"+userStore.getAvatar;
 const select = (key:string) =>{
 	switch (key) {
 	case "logout":

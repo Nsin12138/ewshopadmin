@@ -107,16 +107,16 @@ const slideSubmit = (e)=>{
 	e.preventDefault();
 	formRef.value.validate(errors=>{
 		if(errors){
-			console.log(errors);
+			// console.log(errors);
 		}else{
 			// 请求API 添加数据
 			addSlide(model.value).then(res=>{
-				console.log(res);
+				// console.log(res);
 				window.$message.success("添加成功");
 				emit("checkShowModal",false);
 				emit("reloadTable");
 			});
-			console.log(model.value);
+			// console.log(model.value);
 		}
 	});
 };

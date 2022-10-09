@@ -98,7 +98,7 @@ const userSubmit = (e)=>{
 	e.preventDefault();
 	formRef.value.validate(errors=>{
 		if(errors){
-			console.log(errors);
+			// console.log(errors);
 		}else{
 			addUser(model.value).then(res=>{
 				emit("checkShowModal",false);

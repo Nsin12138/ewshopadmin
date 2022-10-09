@@ -68,6 +68,7 @@ import EditUser from "./components/EditUser.vue";
 import { users,getUserLock } from "@/api/users";
 const page = ref(1);
 const message = useMessage();
+(<any>window).$message = useMessage();
 const loading = ref(true);
 const data = ref([]);
 const totalPages = ref(0);
@@ -106,9 +107,9 @@ const columns:any = [
 				inactiveValue:0,
 				value:row.is_locked == 1 ? false : true,
 				onClick:()=>{
-					console.log(row.is_locked,"row.isload");
+					// console.log(row.is_locked,"row.isload");
 					row.is_locked==0?row.is_locked=1:row.is_locked=0;
-					console.log(row.is_locked,"row.isload");
+					// console.log(row.is_locked,"row.isload");
 					handleChange(row);
 				}
 			});

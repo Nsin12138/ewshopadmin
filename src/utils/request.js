@@ -34,6 +34,9 @@ request.interceptors.response.use((response) => {
     const { response } = error;
     // 报错的是定义前置拦截器时候抛出一个报错信息
     switch (response.status) {
+        case 400:
+            window.$message.error('无权限修改');
+            break;
         case 401:
             window.$message.error('登陆失败，请重新登录');
             localStorage.removeItem('token');

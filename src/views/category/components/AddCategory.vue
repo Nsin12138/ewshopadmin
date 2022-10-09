@@ -76,13 +76,13 @@ const formRef = ref();
 const CategorySubmit = (e)=>{
 	// e.preventDefault()
 	formRef.value.validate(errors=>{
-		console.log(model.value);
+		// console.log(model.value);
 		if(errors){
-			console.log(errors);
+			// console.log(errors);
 		}else{
-			console.log(model.value);
+			// console.log(model.value);
 			addCategory(model.value).then(res=>{
-				console.log(res);
+				// console.log(res);
 				emit("checkShowModal",false);
 				emit("reloadTable");
 			});

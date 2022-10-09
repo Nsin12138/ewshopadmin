@@ -5,7 +5,7 @@ import {login,user} from "@/api/auth";
 export interface IUserState {
     token:string;
     username:string;
-    avatar:string;
+	avatar_url:string;
     permissions:string[];
     info:any;
 }
@@ -16,7 +16,7 @@ export const useUserStore = defineStore({
 	state: ():IUserState => ({
 		token:localStorage.getItem("token") || "", // 在页面刷新时已经保留token
 		username:"",
-		avatar:"",
+		avatar_url:"",
 		permissions:[],
 		info:{},
 	}),
@@ -25,7 +25,7 @@ export const useUserStore = defineStore({
 			return this.token;
 		},
 		getAvatar():string {
-			return this.avatar;
+			return this.avatar_url;
 		},
 		getUserName():string {
 			return this.username;
@@ -49,8 +49,8 @@ export const useUserStore = defineStore({
 			localStorage.setItem("token",token);
 			this.token = token;
 		},
-		setAvatar(avatar: string){
-			this.avatar = avatar;
+		setAvatar(avatar_url: string){
+			this.avatar_url = avatar_url;
 		},
 		setUserInfo(info:object){
 			this.info = info;
@@ -73,18 +73,18 @@ export const useUserStore = defineStore({
 					await this.getUser();
 				}
 			}catch(error){
-				console.log(error);
+				// console.log(error);
 			}      },
 		async getUser(){
 			// await useUserStore.getUser()
 			try {
 				const response:any = await user();
 				this.setUserInfo(response);
-				this.setAvatar(response.avatar);
+				this.setAvatar(response.avatar_url);
 				this.setUserName(response.name);
 				return response;
 			}catch(error){
-				console.log(error);
+				// console.log(error);
 			}
 		}
 	}

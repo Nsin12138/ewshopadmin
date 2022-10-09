@@ -223,7 +223,7 @@ const getOrderList = (params) =>{
 	loadingBar.start();
 	orders(params).then((res:any) =>{
 		data.value = res.data;
-		console.log(res.data);
+		// console.log(res.data);
 		totalPages.value = res.meta.pagination.total_pages;
 		page.value = res.meta.pagination.current_page;
 		loadingBar.finish();

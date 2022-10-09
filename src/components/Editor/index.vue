@@ -10,11 +10,11 @@ import "@vueup/vue-quill/dist/vue-quill.snow.css";
 const editor = ref();
 const emit = defineEmits(["backContent"]);
 
-const updateContent = (e)=>{
-	console.log(e);
+const updateContent = ()=>{
+	// console.log(e);
 	emit("backContent",editor.value.getHTML());
 	// model.value.details =  editor.value.getHTML()
-	console.log(editor.value.getHTML());
+	// console.log(editor.value.getHTML());
 };
 
 </script>

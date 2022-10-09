@@ -64,7 +64,6 @@ export  function recommendGood(goodid) {
 		{
 			url: `/api/admin/goods/${goodid}/recommend`,
 			method: "PATCH",
-
 		}
 	);
 }

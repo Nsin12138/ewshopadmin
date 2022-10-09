@@ -147,10 +147,10 @@ const formRef = ref();
 //添加商品功能实现
 const userSubmit = (e)=>{
 	e.preventDefault();
-	console.log(model);
+	// console.log(model);
 	formRef.value.validate(errors=>{
 		if(errors){
-			console.log(errors);
+			// console.log(errors);
 		}else{
 			addGood(model.value).then(res=>{
 				emit("checkShowModal",false);

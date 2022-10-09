@@ -80,7 +80,7 @@ const params={
 const showForm = ref(false);
 const emit = defineEmits(["checkShowModal","shuaxin"]);
 onMounted(()=>{
-	console.log(123123);
+	// console.log(123123);
 	if(props.order_id){
 		getOrderInfo(props.order_id,params).then(res=>{
 			model.value.express_type = res.express_type;
@@ -109,7 +109,7 @@ const orderSubmit = (e)=>{
 	e.preventDefault();
 	formRef.value.validate(errors=>{
 		if(errors){
-			console.log(errors);
+			// console.log(errors);
 		}else{
 			OrderPost(props.order_id,model.value,params).then(res=>{
 				window.$message.success("修改成功");

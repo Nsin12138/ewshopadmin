@@ -38,7 +38,7 @@ onMounted(()=>{
 });
 
 const submitCallback = ()=>{
-	console.log(11111111111111);
+	// console.log(11111111111111);
 	delSlide(props.slide_id).then(res=>{
 		window.$message.success("删除成功");
 		emit("checkShowModal",false);
