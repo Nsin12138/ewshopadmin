@@ -26,7 +26,7 @@ onMounted(()=>{
 });
 const router = useRouter();
 const menuOptions = generatorMenu(routeModuleList);
-const handleUpdateValue=(key,item) =>{
+const handleUpdateValue=(key) =>{
 	// console.log(key,item);
 	defaultKey.value = key;
 	router.push({name:key});

@@ -94,7 +94,7 @@ const handleSubmit = () => {
 			};
 			try {
 				// 执行登录操作
-				userStore.login(params).then(res => {      // res是userStore里面返回的数据
+				userStore.login(params).then(_res => {      // res是userStore里面返回的数据
 					// 关闭窗口
 					// Comment(res);
 					message.success("登陆成功");

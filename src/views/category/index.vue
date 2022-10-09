@@ -93,7 +93,7 @@ const  getCategoryList =  (params) =>{
 		data.value = res;
 		loadingBar.finish();
 		loading.value = false;
-	}).catch(err=>{
+	}).catch(()=>{
 		// console.log(err);
 		loadingBar.error();
 	});
