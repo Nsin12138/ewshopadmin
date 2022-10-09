@@ -29,16 +29,14 @@
 
 <script lang="ts" setup>
 import {h, ref, onMounted} from "vue";
-import {NButton, NInputNumber, useLoadingBar} from "naive-ui";
-import {category, getCategorySeq} from "@/api/category";
+import {NButton, useLoadingBar} from "naive-ui";
+import {category} from "@/api/category";
 import AddCategory from "@/views/category/components/AddCategory.vue";
 import EditCategory from "@/views/category/components/EditCategory.vue";
 
-const Nsin = {
-	seq:0
-};
-const data = ref([]);
-const columns = [
+
+const data:any = ref([]);
+const columns:any = [
 	{
 		title: "分类名称",
 		key: "name",
@@ -50,23 +48,6 @@ const columns = [
 		width:"10%",
 		align:"center",
 		sorter: (row1, row2) => row1.seq - row2.seq,
-		/*render(row){
-			return h(NInputNumber,{
-				defaultValue:row.seq,
-				showButton:false,
-				value:ref(),
-				// modelValue:ref(row.seq),
-				onBlur(){
-					console.log(row);
-					row.seq = NInputNumber.value;
-					getCategorySeq(row.id,row.seq,params).then(res=>{
-						console.log(res);
-						loadingBar.finish();
-					});
-					
-				}
-			});
-		}*/
 	},
 	{
 		title: "操作",
@@ -84,7 +65,7 @@ const columns = [
 			},"修改");
 		}}
 ];
-const params={};
+
 const loading = ref(true);
 // 添加模态框显示状态
 const showModal = ref(false);
@@ -92,7 +73,7 @@ const showModal = ref(false);
 const showEditModal = ref(false);
 
 const loadingBar = useLoadingBar();
-const category_id = ref("");
+const category_id = ref(0);
 
 onMounted(()=>{
 	getCategoryList({type:"all"});

@@ -12,7 +12,7 @@ export function users(params){
 		}
 	);
 }
-
+//添加用户
 export  function addUser(data) {
 	return request(
 		{

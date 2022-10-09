@@ -48,7 +48,7 @@ const page = ref(1);
 const message = useMessage();
 const data = ref([]);
 const totalPages = ref(0);
-const columns = [
+const columns:any = [
 	{
 		title: "Logo图片",
 		key: "img",
@@ -145,7 +145,7 @@ const showModal = ref(false);
 const showEditModal = ref(false);
 // 删除模态框
 const showDelModal = ref(false);
-const slide_id = ref("");
+const slide_id = ref(0);
 
 const checkEditModal = (show:boolean) => {
 	showEditModal.value = show;
@@ -169,14 +169,14 @@ const updatePage = (pageNum) => {
 
 const getUserList = (params) =>{
 	loadingBar.start();
-	slides(params).then(res =>{
+	slides(params).then((res:any) =>{
 		console.log(res);
 		data.value = res.data;
 		totalPages.value = res.meta.pagination.total_pages;
 		page.value = res.meta.pagination.current_page;
 		loadingBar.finish();
 		loading.value = false;
-	}).catch(err=>{
+	}).catch(()=>{
 		loadingBar.error();
 	});
 };

@@ -1,6 +1,6 @@
 import {defineStore} from "pinia";
 import {login,user} from "@/api/auth";
-
+// import {getUserInfo} from "@/api/users";
 // 定义state中的数据类型
 export interface IUserState {
     token:string;
@@ -9,6 +9,8 @@ export interface IUserState {
     permissions:string[];
     info:any;
 }
+
+
 export const useUserStore = defineStore({
 	id: "app-user",
 	state: ():IUserState => ({
@@ -33,9 +35,10 @@ export const useUserStore = defineStore({
 		},
 		async getUserInfo():Promise<object>{
 			// 判断 this.info 是否是空对象/不存在，不存在时调用getUser方法
-
-			if(!this.info?.id)
-				this.getUser();
+			if(!this.info?.id) {
+				// const store = useUserStore();
+				await useUserStore().getUser();
+			}
 			return this.info;
 		}
 	},
@@ -61,7 +64,7 @@ export const useUserStore = defineStore({
 		// 异步的登录方法
 		async login(userInfo:object){
 			try {
-				const response = await login(userInfo);
+				const response:any = await login(userInfo);
 
 				if (response.access_token){
 
@@ -73,8 +76,9 @@ export const useUserStore = defineStore({
 				console.log(error);
 			}      },
 		async getUser(){
+			// await useUserStore.getUser()
 			try {
-				const response = await user();
+				const response:any = await user();
 				this.setUserInfo(response);
 				this.setAvatar(response.avatar);
 				this.setUserName(response.name);

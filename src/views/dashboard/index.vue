@@ -11,13 +11,8 @@
                 footer: 'soft'
             }"
             header-style="background-color:#f9fbfe;padding:10px;border-bottom:1px solid #bed0ea"
-
-
         >
           <p v-for="item in Systems" :key="item.id">{{item.title}}：<a :href="item.url">{{item.value}}</a></p>
-<!--          <p>开发团队：<a href="https://www.lmonkey.com/">学习猿地</a> </p>
-          <p>邮箱：<u>ewshop@eduwork.cn</u></p>
-          <p>Q Q：<a href="#"> 779050720</a></p>-->
         </n-card>
       </div>
     </div>
@@ -28,9 +23,9 @@
           style="border: 1px solid #bed0ea"
           title="商品信息"
           :segmented="{
-      content: true,
-      footer: 'soft',
-    }"
+              content: true,
+              footer: 'soft',
+          }"
           header-style="background-color:#f9fbfe;padding:10px;border-bottom:1px solid #bed0ea"
           content-style="padding:5px 20px"
       >
@@ -49,16 +44,15 @@
           </div>
         </div>
       </n-card>
-
     </div>
     <div style="width: 48%" class="mt-4 bg-white ml-5">
       <n-card
           style="border: 1px solid #bed0ea"
           title="访客统计"
           :segmented="{
-      content: true,
-      footer: 'soft',
-    }"
+            content: true,
+            footer: 'soft',
+          }"
           header-style="background-color:#f9fbfe;padding:10px;border-bottom:1px solid #bed0ea"
           content-style="padding:5px 20px"
       >
@@ -99,7 +93,6 @@
               <th></th>
               <th>订单总数</th>
               <th>订单总额</th>
-
             </tr>
             </thead>
             <tbody>
@@ -107,13 +100,11 @@
               <td>今日订单</td>
               <td>{{order_info.today.nums}}个</td>
               <td>￥{{order_info.today.total_price}}</td>
-
             </tr>
             <tr>
               <td>昨日订单</td>
               <td>{{order_info.yesterday.nums}}个</td>
               <td>￥{{order_info.yesterday.total_price}}</td>
-
             </tr>
             <tr>
               <td>全部订单</td>
@@ -121,25 +112,18 @@
               <td>￥{{order_info.total.total_price}}</td>
             </tr>
             </tbody>
-
           </n-table>
-          <!--          <p>开发团队：<a href="https://www.lmonkey.com/">学习猿地</a> </p>
-                    <p>邮箱：<u>ewshop@eduwork.cn</u></p>
-                    <p>Q Q：<a href="#"> 779050720</a></p>-->
         </n-card>
       </div>
     </div>
   </div>
-
 </template>
-
 <script lang="ts" setup>
 import {onMounted, ref} from "vue";
 import {stats} from "@/api/stat";
-
-const goods_info = ref({});
-const users_info = ref({});
-const order_info = ref({
+const goods_info:any = ref({});
+const users_info:any = ref({});
+const order_info:any = ref({
 	today:{},
 	yesterday:{},
 	total:{},
@@ -147,14 +131,13 @@ const order_info = ref({
 onMounted(()=>{
 	getNum({});
 });
-const getNum = (params) =>{
-	stats(params).then(res => {
+const getNum:any = (params) =>{
+	stats(params).then((res:any) => {
 		goods_info.value = res.goods_info;
 		users_info.value = res.users_info;
 		order_info.value = res.order_info;
 	});
 };
-
 const Systems = [
 	{id:1,title:"软件版本",value:"EWShop1.0教学版",url:"https://www.eduwork.cn/"},
 	{id:2,title:"开发团队",value:"学习猿地",url:"https://www.lmonkey.com/"},

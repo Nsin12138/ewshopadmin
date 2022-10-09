@@ -1,6 +1,6 @@
 import request from "@/utils/request";
-
-export function login(data:Object){
+//登录接口
+export function login(data){
 	return request(
 		{
 			url:"/api/auth/login",
@@ -9,7 +9,7 @@ export function login(data:Object){
 		}
 	);
 }
-
+//用户接口
 export function user(){
 	return request(
 		{
@@ -18,7 +18,7 @@ export function user(){
 		}
 	);
 }
-
+//退出登录接口
 export function logout() {
 	return request(
 		{

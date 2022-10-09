@@ -51,11 +51,7 @@ const props =  defineProps({
 	showModal: {
 		type: Boolean,
 		default: false
-	},
-	/*data123:{
-    type:Array,
-    default: []
-  }*/
+	}
 });
 
 /**
@@ -66,16 +62,8 @@ const props =  defineProps({
 const emit = defineEmits(["checkShowModal"]);
 const model = ref({
 	name: null,
-	/* pid: null,
-  group:null*/
 });
 const rules = {
-	/*pid: [
-    {
-      required: false,
-      message: '请输入父类名称'
-    }
-  ],*/
 	name: [
 		{
 			required: true,

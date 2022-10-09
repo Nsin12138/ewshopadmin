@@ -56,7 +56,7 @@ import { PersonOutline, LockClosedOutline} from "@vicons/ionicons5";
 import { useUserStore } from "@/store/user";
 import { useMessage } from "naive-ui";
 const message = useMessage();
-window.$message = useMessage();
+// window.$message = useMessage();
 
 
 interface FormState {
@@ -77,8 +77,8 @@ const rules = {
 	username:{ required: true, message: "请输入用户名", trigger: "blur" },
 	password:{ required: true, message: "请输入密码", trigger: "blur" },
 };
-const handleSubmit = (e:Event) => {
-	//e.preventDefault();
+const handleSubmit = () => {
+	// e.preventDefault();
 	// 表单验证
 	formRef.value.validate(async(errors:any)=> {
 		if (!errors) {
@@ -94,7 +94,7 @@ const handleSubmit = (e:Event) => {
 			};
 			try {
 				// 执行登录操作
-				const response = userStore.login(params).then(res => {      // res是userStore里面返回的数据
+				userStore.login(params).then(res => {      // res是userStore里面返回的数据
 					// 关闭窗口
 					console.log(res);
 					message.success("登陆成功");

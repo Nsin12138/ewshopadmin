@@ -49,7 +49,7 @@ const message = useMessage();
 const data = ref([]);
 const loading = ref(true);
 const totalPages = ref(0);
-const columns = [
+const columns:any = [
 	{
 		title: "轮播图片",
 		key: "img",
@@ -150,7 +150,7 @@ const showModal = ref(false);
 const showEditModal = ref(false);
 // 删除模态框
 const showDelModal = ref(false);
-const link_id = ref("");
+const link_id = ref(0);
 
 const checkEditModal = (show:boolean) => {
 	showEditModal.value = show;
@@ -170,31 +170,17 @@ const updatePage = (pageNum) => {
 		email:formSearch.value.email
 	});
 };
-const searchSubmit = (e) =>{
-	e.preventDefault();
-	getLinkList({
-		name:formSearch.value.name,
-		email:formSearch.value.email,
-		current:1
-	});
-};
-const searchReload = ()=>{
-	getLinkList({});
-	formSearch.value = {
-		name:"",
-		email:""
-	};
-};
+//获取友情链接列表
 const getLinkList = (params) =>{
 	loadingBar.start();
-	links(params).then(res =>{
+	links(params).then((res:any) =>{
 		console.log(res);
 		data.value = res.data;
 		totalPages.value = res.meta.pagination.total_pages;
 		page.value = res.meta.pagination.current_page;
 		loadingBar.finish();
 		loading.value = false;
-	}).catch(err=>{
+	}).catch(()=>{
 		loadingBar.error();
 	});
 };

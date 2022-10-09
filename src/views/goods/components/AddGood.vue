@@ -144,6 +144,7 @@ const rules = {
 	],
 };
 const formRef = ref();
+//添加商品功能实现
 const userSubmit = (e)=>{
 	e.preventDefault();
 	console.log(model);

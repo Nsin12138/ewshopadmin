@@ -4,7 +4,7 @@ import request from "@/utils/request";
  * @param params
  * */
 // 商品列表
-export function goods(params:any){
+export function goods(params){
 	return request(
 		{
 			url:"/api/admin/goods",

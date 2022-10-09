@@ -2,7 +2,7 @@ import {createRouter, createWebHistory, RouteRecordRaw} from "vue-router";
 // import Home from '@/views/Home.vue'
 import Login from "@/views/login/index.vue";
 // const modules = import.meta.glob('./modules/**/*.ts',{eager: true}  );
-const modules = import.meta.glob("./modules/**/*.ts",{eager:true});
+const modules:any = import.meta.glob("./modules/**/*.ts",{eager:true});
 const routeModuleList: RouteRecordRaw[] = [];
 
 Object.keys(modules).forEach((key) => {

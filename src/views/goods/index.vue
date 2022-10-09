@@ -74,7 +74,7 @@
 </template>
 
 <script lang="ts" setup>
-import { h,ref,onMounted, reactive } from "vue";
+import { h,ref,onMounted } from "vue";
 import { NButton, useMessage,NImage,NSwitch,useLoadingBar } from "naive-ui";
 import AddGood from "./components/AddGood.vue";
 import EditGood from "./components/EditGood.vue";
@@ -82,9 +82,9 @@ import { goods,getGoodLock,recommendGood } from "@/api/goods";
 const page = ref(1);
 const message = useMessage();
 const loading = ref(true);
-const data = ref([]);
+const data:any = ref([]);
 const totalPages = ref(0);
-const columns = [
+const columns:any = [
 	{
 		title: "图片",
 		key: "cover",
@@ -189,8 +189,8 @@ const formSearch = ref({
 const showModal = ref(false);
 // 编辑模态框
 const showEditModal = ref(false);
-
-const good_id = ref("");
+// 商品id
+const good_id = ref(0);
 
 const checkEditModal = (show:boolean) => {
 	showEditModal.value = show;
@@ -200,6 +200,7 @@ const loadingBar = useLoadingBar();
 onMounted(()=>{
 	getGoodList({});
 });
+// 分页功能实现
 const updatePage = (pageNum) => {
 	getGoodList({
 		current:pageNum,
@@ -208,6 +209,7 @@ const updatePage = (pageNum) => {
 		is_recommend:formSearch.value.is_recommend
 	});
 };
+//定义重复方法
 const repetition = ()=>{
 	getGoodList({
 		title: formSearch.value.title,
@@ -244,15 +246,16 @@ const searchReload = ()=>{
 
 	};
 };
+//获取商品列表
 const getGoodList = (params) =>{
 	loadingBar.start();
-	goods(params).then(goods =>{
-		data.value = goods.data;
-		totalPages.value = goods.meta.pagination.total_pages;
-		page.value = goods.meta.pagination.current_page;
+	goods(params).then((res:any) =>{
+		data.value = res.data;
+		totalPages.value = res.meta.pagination.total_pages;
+		page.value = res.meta.pagination.current_page;
 		loadingBar.finish();
 		loading.value = false;
-	}).catch(err=>{
+	}).catch(()=>{
 		loadingBar.error();
 	});
 };

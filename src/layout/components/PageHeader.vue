@@ -8,10 +8,8 @@
             size="small"
             :src="avatar"
         />
-        <span class="pl-2">
-                        {{userStore.getUserName}}
-<!--                        超级管理员-->
-                      </span>
+        <span class="pl-2">{{userStore.getUserName}}</span>
+        <!--                        超级管理员-->
       </div>
     </n-dropdown>
   </div>
@@ -27,7 +25,7 @@ import {
 import {useUserStore} from "@/store/user";
 const userStore = useUserStore();
 userStore.getUserInfo;
-const options = ref([
+const options:any = ref([
 	{
 		label: "退出登录",
 		key: "logout",

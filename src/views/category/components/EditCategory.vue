@@ -44,7 +44,7 @@
 </template>
 
 <script setup>
-import { h, ref,defineProps,defineEmits,onMounted } from "vue";
+import {  ref,defineProps,defineEmits,onMounted } from "vue";
 import {getCategoryInfo,updateCategory} from "@/api/category";
 const props =  defineProps({
 	showModal: {
@@ -57,6 +57,7 @@ const props =  defineProps({
 	}
 });
 const model = ref({
+	pid:null,
 	name: null,
 });
 const showForm = ref(false);

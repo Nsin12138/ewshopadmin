@@ -6,7 +6,6 @@
 import {ref, defineEmits } from "vue";
 import { QuillEditor } from "@vueup/vue-quill";
 import "@vueup/vue-quill/dist/vue-quill.snow.css";
-// import '@vueup/vue-quill/dist/vue-quill.bubble.css';
 
 const editor = ref();
 const emit = defineEmits(["backContent"]);

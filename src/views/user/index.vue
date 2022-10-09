@@ -42,7 +42,7 @@
         <div>
 
           <n-data-table
-              v-model:columns="columns"
+              :columns="columns"
               :data="data"
               :pagination="pagination"
               :bordered="false"
@@ -71,7 +71,7 @@ const message = useMessage();
 const loading = ref(true);
 const data = ref([]);
 const totalPages = ref(0);
-const columns = [
+const columns:any = [
 	{
 		title: "头像",
 		key: "avatar",
@@ -146,7 +146,7 @@ const showModal = ref(false);
 // 编辑模态框
 const showEditModal = ref(false);
 
-const user_id = ref("");
+const user_id = ref(0);
 
 const checkEditModal = (show:boolean) => {
 	showEditModal.value = show;
@@ -181,13 +181,13 @@ const searchReload = ()=>{
 };
 const getUserList = (params) =>{
 	loadingBar.start();
-	users(params).then(users =>{
+	users(params).then((users:any) =>{
 		data.value = users.data;
 		totalPages.value = users.meta.pagination.total_pages;
 		page.value = users.meta.pagination.current_page;
 		loadingBar.finish();
 		loading.value = false;
-	}).catch(err=>{
+	}).catch(()=>{
 		loadingBar.error();
 	});
 	// getUserLock(user_id)

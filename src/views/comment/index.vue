@@ -68,17 +68,17 @@
 
 <script lang="ts" setup>
 import { h,ref,onMounted} from "vue";
-import { NButton, useMessage,NAvatar,NSwitch,useLoadingBar } from "naive-ui";
+import { NButton,useLoadingBar } from "naive-ui";
 import EditComment from "./components/EditComment.vue";
 import { comments } from "@/api/comment";
 import DeleteComment from "./components/DeleteComment.vue";
 
 const loading = ref(true);
 const page = ref(1);
-const message = useMessage();
+// const message = useMessage();
 const data = ref([]);
 const totalPages = ref(0);
-const columns = [
+const columns:any = [
 	{
 		title: "商品",
 		key: "goods.title",
@@ -160,13 +160,13 @@ const formSearch = ref({
 	rate: 1 | 2 | 3
 });
 // 添加模态框显示状态
-const showModal = ref(false);
+// const showModal = ref(false);
 // 编辑模态框
 const showEditModal = ref(false);
 // 删除模态框
 const showDelModal = ref(false);
 
-const comment_id = ref("");
+const comment_id = ref(0);
 
 const checkEditModal = (show:boolean) => {
 	showEditModal.value = show;
@@ -229,7 +229,7 @@ const goodSubmit = (rates) =>{
 
 const getCommentList = (params) =>{
 	loadingBar.start();
-	comments(params).then(res =>{
+	comments(params).then((res:any) =>{
 		data.value = res.data;
 		console.log(data.value,"1q1111111111111111111");
 		console.log(res,"33333333333333333333333");
@@ -237,12 +237,9 @@ const getCommentList = (params) =>{
 		page.value = res.meta.pagination.current_page;
 		loadingBar.finish();
 		loading.value = false;
-	}).catch(err=>{
+	}).catch(()=>{
 		loadingBar.error();
 	});
-};
-const checkShowModal = (status)=>{
-	showModal.value = status;
 };
 const reload = ()=>{
 	getCommentList({

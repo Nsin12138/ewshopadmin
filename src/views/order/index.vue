@@ -58,7 +58,7 @@
         </div>
         <div>
           <n-data-table
-              v-model:columns="columns"
+              :columns="columns"
               :data="data"
               :bordered="true"
               :pagination="pagination"
@@ -77,15 +77,15 @@
 
 <script lang="ts" setup>
 import { h,ref,onMounted } from "vue";
-import { NButton, useMessage,useLoadingBar } from "naive-ui";
+import { NButton,useLoadingBar } from "naive-ui";
 import EditOrder from "./components/EditOrder.vue";
 import { orders } from "@/api/order";
 const page = ref(1);
-const message = useMessage();
+// const message = useMessage();
 const loading = ref(true);
 const data = ref([]);
 const totalPages = ref(0);
-const columns = [
+const columns:any = [
 	{
 		title: "单号",
 		key: "order_no",
@@ -158,11 +158,11 @@ const formSearch = ref({
 	status: 1|2|3|4|5
 });
 // 添加模态框显示状态
-const showModal = ref(false);
+
 // 编辑模态框
 const showEditModal = ref(false);
 
-const order_id = ref("");
+const order_id = ref(0);
 
 // const checkEditModal = (show:boolean) => {
 //   showEditModal.value = show
@@ -221,20 +221,18 @@ const searchReload = ()=>{
 };
 const getOrderList = (params) =>{
 	loadingBar.start();
-	orders(params).then(res =>{
+	orders(params).then((res:any) =>{
 		data.value = res.data;
 		console.log(res.data);
 		totalPages.value = res.meta.pagination.total_pages;
 		page.value = res.meta.pagination.current_page;
 		loadingBar.finish();
 		loading.value = false;
-	}).catch(err=>{
+	}).catch(()=>{
 		loadingBar.error();
 	});
 };
-const checkShowModal = (status)=>{
-	showModal.value = status;
-};
+
 const checkEditModal = (show:boolean) => {
 	showEditModal.value = show;
 };
