@@ -153,6 +153,7 @@ const columns:any = [
 			];
 		}}
 ];
+// 定义分页
 const pagination = ref(false as const);
 const formSearch = ref({
 	title:"",
@@ -165,7 +166,7 @@ const formSearch = ref({
 const showEditModal = ref(false);
 // 删除模态框
 const showDelModal = ref(false);
-
+// 定义评论id
 const comment_id = ref(0);
 
 const checkEditModal = (show:boolean) => {
@@ -188,6 +189,7 @@ const updatePage = (pageNum) => {
 		// rate:formSearch.value.rate,
 	});
 };
+// 搜索功能
 const searchSubmit = (e) =>{
 	e.preventDefault();
 	// console.log(formSearch.value.title);
@@ -199,6 +201,7 @@ const searchSubmit = (e) =>{
 	// console.log();
 	// repetition ()
 };
+// 重置功能实现
 const searchReload = ()=>{
 	getCommentList(params);
 	formSearch.value = {
@@ -226,7 +229,7 @@ const goodSubmit = (rates) =>{
 	formSearch.value.rate = rates;
 	repetition();
 };
-
+// 获取评论列表
 const getCommentList = (params) =>{
 	loadingBar.start();
 	comments(params).then((res:any) =>{

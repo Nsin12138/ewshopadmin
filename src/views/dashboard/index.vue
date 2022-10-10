@@ -18,7 +18,7 @@
     </div>
   </div>
   <div class="flex">
-    <div style="width: 48%" class="mt-4 bg-white ml-5">
+    <n-spin :show="show" style="width: 48%" class="mt-4 bg-white ml-5">
       <n-card
           style="border: 1px solid #bed0ea"
           title="商品信息"
@@ -29,9 +29,10 @@
           header-style="background-color:#f9fbfe;padding:10px;border-bottom:1px solid #bed0ea"
           content-style="padding:5px 20px"
       >
-        <div  class="goods">
+        <div  class="goods" >
+
           <div>
-            <div>上架商品</div><div><span>{{goods_info.on_nums}}</span>件</div>
+            <div>上架商品</div><div><span >{{goods_info.on_nums}}</span>件</div>
           </div>
           <div>
             <div>下架商品</div><div><span>{{goods_info.un_nums}}</span>件</div>
@@ -44,8 +45,8 @@
           </div>
         </div>
       </n-card>
-    </div>
-    <div style="width: 48%" class="mt-4 bg-white ml-5">
+    </n-spin>
+    <n-spin :show="show" style="width: 48%" class="mt-4 bg-white ml-5">
       <n-card
           style="border: 1px solid #bed0ea"
           title="访客统计"
@@ -72,10 +73,10 @@
         </div>
       </n-card>
 
-    </div>
+    </n-spin>
   </div>
   <div class="content px-4">
-    <div class="mt-4 bg-white">
+    <n-spin :show="show" class="mt-4 bg-white">
       <div>
         <n-card class="xt"
                 style="border: 1px solid #bed0ea"
@@ -115,12 +116,15 @@
           </n-table>
         </n-card>
       </div>
-    </div>
+    </n-spin>
   </div>
 </template>
 <script lang="ts" setup>
 import {onMounted, ref} from "vue";
+// import {useLoadingBar} from "naive-ui";
 import {stats} from "@/api/stat";
+// 定义数据加载
+const show = ref(true);
 const goods_info:any = ref({});
 const users_info:any = ref({});
 const order_info:any = ref({
@@ -131,13 +135,16 @@ const order_info:any = ref({
 onMounted(()=>{
 	getNum({});
 });
+// 获取页面统计数据
 const getNum:any = (params) =>{
 	stats(params).then((res:any) => {
 		goods_info.value = res.goods_info;
 		users_info.value = res.users_info;
 		order_info.value = res.order_info;
+		show.value=false;
 	});
 };
+// 定义静态数组
 const Systems = [
 	{id:1,title:"软件版本",value:"EWShop1.0教学版",url:"https://www.eduwork.cn/"},
 	{id:2,title:"开发团队",value:"学习猿地",url:"https://www.lmonkey.com/"},

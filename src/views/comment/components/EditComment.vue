@@ -63,7 +63,9 @@ const params={
 	include:"goods,user" // 订单详情里包含商品信息
 };
 const showForm = ref(false);
+
 const emit = defineEmits(["checkShowModal","shuaxin"]);
+
 onMounted(()=>{
 	// console.log(123123);
 	if(props.comment_id){
@@ -75,6 +77,7 @@ onMounted(()=>{
 });
 
 const formRef = ref();
+// 评论回复编辑功能
 const commentSubmit = (e)=>{
 	e.preventDefault();
 	formRef.value.validate(errors=>{

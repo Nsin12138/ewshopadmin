@@ -71,21 +71,22 @@ const loading = ref(true);
 const showModal = ref(false);
 // 编辑模态框
 const showEditModal = ref(false);
-
+// 页面加载条
 const loadingBar = useLoadingBar();
+// 分类id，以供传值
 const category_id = ref(0);
 
 onMounted(()=>{
 	getCategoryList({type:"all"});
 });
-
+// 编辑模态框
 const checkEditModal = (show:boolean) => {
 	showEditModal.value = show;
 };
 const checkShowModal = (status)=>{
 	showModal.value = status;
 };
-
+// 获取分类列表
 const  getCategoryList =  (params) =>{
 	loadingBar.start();
 	category(params).then(res=>{

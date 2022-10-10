@@ -155,14 +155,17 @@ const link_id = ref(0);
 const checkEditModal = (show:boolean) => {
 	showEditModal.value = show;
 };
+
 const checkDelModal = (show:boolean) => {
 	showDelModal.value = show;
 };
+// 加载条
 const loadingBar = useLoadingBar();
 
 onMounted(()=>{
 	getLinkList({});
 });
+// 翻页
 const updatePage = (pageNum) => {
 	getLinkList({
 		current:pageNum,
